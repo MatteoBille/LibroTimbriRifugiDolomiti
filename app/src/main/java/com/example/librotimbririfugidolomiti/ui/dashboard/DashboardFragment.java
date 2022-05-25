@@ -6,11 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
@@ -31,27 +32,33 @@ public class DashboardFragment extends Fragment {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        table = (TableLayout) root.findViewById(R.id.table);
 
 
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
 
-        createTableRow(inflater);
+        createRecyclerView(inflater);
         return root;
     }
 
-    private void createTableRow(LayoutInflater inflater) {
+    private void createRecyclerView(LayoutInflater inflater) {
 
 
-        mRifugiViewModel.getAllRifugi().observe(getViewLifecycleOwner(), Rifugi -> {
+        RecyclerView recyclerView = binding.getRoot().findViewById(R.id.recyclerview);
+        final RecyclerCustomAdapter adapter = new RecyclerCustomAdapter(new RecyclerCustomAdapter.WordDiff());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        // Add an observer on the LiveData returned by getAlphabetizedWords.
+        // The onChanged() method fires when the observed data changes and the activity is
+        // in the foreground.
+        mRifugiViewModel.getAllRifugi().observe(getViewLifecycleOwner(), rifugi -> {
             // Update the cached copy of the words in the adapter.
-            for(int i=0;i<Rifugi.size();i++){
-                View custom = inflater.inflate(R.layout.table_rows, null);
-                TextView tv = (TextView) custom.findViewById(R.id.nomeRifugio);
-                tv.setText(Rifugi.get(i).getNomeRifugio());
-                table.addView(custom);
-            }
+            adapter.submitList(rifugi);
+            Log.i("DATA",rifugi.get(0).getNomeRifugio()+"");
         });
+
+
 
 
 
