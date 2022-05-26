@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey;
 public class Rifugio {
 
 
-
     @ColumnInfo(name = "Latitudine")
     private Double Latitudine;
 
@@ -29,15 +28,21 @@ public class Rifugio {
     @ColumnInfo(name = "GruppoDolomitico")
     private String GruppoDolomitico;
 
+    @NonNull
+    @ColumnInfo(name = "NomeImmagine")
+    private String NomeImmagine;
+
+
     public Rifugio() {
     }
 
-    public Rifugio( Double latitudine, Double longitudine, Integer codiceRifugio, String nomeRifugio, String gruppoDolomitico) {
+    public Rifugio(Double latitudine, Double longitudine, Integer codiceRifugio, String nomeRifugio, String gruppoDolomitico, String nomeImmagine) {
         CodiceRifugio = codiceRifugio;
         NomeRifugio = nomeRifugio;
         Latitudine = latitudine;
         Longitudine = longitudine;
         GruppoDolomitico = gruppoDolomitico;
+        NomeImmagine = nomeImmagine;
     }
 
     public void setCodiceRifugio(int codiceRifugio) {
@@ -56,14 +61,12 @@ public class Rifugio {
         Longitudine = longitudine;
     }
 
-    public void setGruppoDolomitico(String gruppoDolomitico) {
-        GruppoDolomitico = gruppoDolomitico;
-    }
+    public void setGruppoDolomitico(String gruppoDolomitico) { GruppoDolomitico = gruppoDolomitico; }
+
+    public void setNomeImmagine(String nomeImmagine) { NomeImmagine = nomeImmagine; }
 
 
-
-
-    public int getCodiceRifugio() {
+    public Integer getCodiceRifugio() {
         return CodiceRifugio;
     }
 
@@ -71,17 +74,19 @@ public class Rifugio {
         return NomeRifugio;
     }
 
-    public double getLatitudine() {
+    public Double getLatitudine() {
         return Latitudine;
     }
 
-    public double getLongitudine() {
+    public Double getLongitudine() {
         return Longitudine;
     }
 
     public String getGruppoDolomitico() {
         return GruppoDolomitico;
     }
+
+    public String getNomeImmagine() { return NomeImmagine; }
 
 
 }

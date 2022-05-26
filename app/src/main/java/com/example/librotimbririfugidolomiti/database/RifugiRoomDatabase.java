@@ -25,7 +25,7 @@ public abstract class RifugiRoomDatabase extends RoomDatabase {
             synchronized (RifugiRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            RifugiRoomDatabase.class, "RifugiDolomiti.db").createFromAsset("database/RifugiDolomiti.db")
+                            RifugiRoomDatabase.class, "RifugiDolomiti.db").createFromAsset("database/RifugiDolomiti.db").allowMainThreadQueries()
                             .build();
                 }
             }

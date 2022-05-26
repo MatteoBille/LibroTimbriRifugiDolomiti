@@ -1,19 +1,12 @@
-package com.example.librotimbririfugidolomiti.ui.dashboard;
+package com.example.librotimbririfugidolomiti.ui.listofhut;
 
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.Rifugio;
-
-import java.util.List;
 
 public class RecyclerCustomAdapter extends ListAdapter<Rifugio, RifugiViewHolder> {
 

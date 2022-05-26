@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.ui.dashboard;
+package com.example.librotimbririfugidolomiti.ui.listofhut;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
-import com.example.librotimbririfugidolomiti.databinding.FragmentDashboardBinding;
+import com.example.librotimbririfugidolomiti.databinding.FragmentListofallhutsBinding;
 
 
-public class DashboardFragment extends Fragment {
+public class AllTheHutFragment extends Fragment {
 
     TableLayout table;
-    private FragmentDashboardBinding binding;
+    private FragmentListofallhutsBinding binding;
     private RifugiViewModel mRifugiViewModel;
 
 
@@ -30,7 +30,7 @@ public class DashboardFragment extends Fragment {
         DashboardViewModel dashboardViewModel =
                 new ViewModelProvider(this).get(DashboardViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentListofallhutsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
 
@@ -43,7 +43,7 @@ public class DashboardFragment extends Fragment {
     private void createRecyclerView(LayoutInflater inflater) {
 
 
-        RecyclerView recyclerView = binding.getRoot().findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = binding.recyclerview;
         final RecyclerCustomAdapter adapter = new RecyclerCustomAdapter(new RecyclerCustomAdapter.WordDiff());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

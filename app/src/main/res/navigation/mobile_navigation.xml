@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.librotimbririfugidolomiti.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="com.example.librotimbririfugidolomiti.ui.mybook.BookFragment"
+        android:label="@string/title_myBook"
+        tools:layout="@layout/fragment_book" />
 
     <fragment
         android:id="@+id/navigation_notifications"

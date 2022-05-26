@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.ui.dashboard;
+package com.example.librotimbririfugidolomiti.ui.listofhut;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
