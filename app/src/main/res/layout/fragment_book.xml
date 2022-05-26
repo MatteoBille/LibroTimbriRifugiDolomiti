@@ -5,14 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:weightSum="20"
+    android:background="@drawable/background"
     tools:context=".ui.mybook.BookFragment">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="0dp"
         android:layout_weight="2"
         android:text="TextView"
         android:gravity="center"
@@ -20,7 +21,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="351dp"
+        android:layout_height="0dp"
         android:layout_marginTop="30dp"
         android:layout_marginHorizontal="50dp"
         android:layout_weight="8">
@@ -28,32 +29,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="10">
 
             <ImageView
                 android:id="@+id/imageHut1"
                 android:layout_width="match_parent"
-                android:layout_height="166dp"
-                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:layout_weight="8"
                 tools:src="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/nameHut1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:gravity="center"
                 android:layout_weight="1"
                 android:text="TextView" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_weight="1">
 
                 <TextView
                     android:id="@+id/visitDateLabel1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="TextView" />
@@ -61,7 +63,7 @@
                 <TextView
                     android:id="@+id/visitDate1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="TextView" />
@@ -73,7 +75,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/secondCardView"
         android:layout_width="match_parent"
-        android:layout_height="351dp"
+        android:layout_height="0dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="50dp"
         android:layout_marginHorizontal="50dp"
@@ -82,26 +84,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="10">
 
             <ImageView
                 android:id="@+id/imageHut2"
                 android:layout_width="match_parent"
-                android:layout_height="166dp"
+                android:layout_height="0dp"
                 tools:src="@tools:sample/avatars"
-                android:layout_weight="1"/>
+                android:layout_weight="8"/>
 
             <TextView
                 android:id="@+id/nameHut2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:text="TextView"
                 android:gravity="center"
                 android:layout_weight="1"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="1">
 
@@ -127,22 +130,35 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="2"
+        android:weightSum="10">
 
         <Button
             android:id="@+id/prev"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/arrowright"
+
+            />
+
+        <TextView
+            android:id="@+id/pageNumber"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="PrevPage" />
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:gravity="center"
+            android:text="TextView" />
 
         <Button
             android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="nextPage" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/arrowLeft"
+            android:layout_weight="2"
+            />
     </LinearLayout>
 
 </LinearLayout>

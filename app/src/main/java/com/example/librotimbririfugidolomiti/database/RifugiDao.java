@@ -29,8 +29,14 @@ public interface RifugiDao {
     LiveData<List<String>> getListOfDolomiticGroups();
 
     @Query("SELECT * FROM Rifugi where CodiceRifugio = :hutId")
-    LiveData<Rifugio> getHutById(int hutId);
+    Rifugio getHutById(int hutId);
 
     @Query("SELECT COUNT(CodiceRifugio) FROM Rifugi")
     Integer getNumberOfHut();
+
+    @Query("SELECT COUNT(CodiceRifugio) as hutNumber,GruppoDolomitico FROM Rifugi GROUP BY GruppoDolomitico ORDER BY CodiceRifugio")
+    List<HutGroup> getNumberOfHutforEachDolomitcGroup();
+
+    @Query("SELECT * FROM Rifugi WHERE GruppoDolomitico=:groupName")
+    List<Rifugio> getListOfHutByDolomiticGroup(String groupName);
 }

@@ -15,19 +15,27 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.librotimbririfugidolomiti.R;
+import com.example.librotimbririfugidolomiti.database.HutGroup;
+import com.example.librotimbririfugidolomiti.database.RifugiDao;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
+import com.example.librotimbririfugidolomiti.database.Rifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentBookBinding;
 import com.example.librotimbririfugidolomiti.databinding.FragmentListofallhutsBinding;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookFragment extends Fragment {
     private RifugiViewModel mRifugiViewModel;
     private FragmentBookBinding binding;
-    private int nextHut;
+    private int currentPage;
     private int numberOfHut;
-    private String currentGroup;
+
+    Map<Integer, List<Integer>> bookPages;
+
     public BookFragment() {
         // Required empty public constructor
     }
@@ -41,12 +49,14 @@ public class BookFragment extends Fragment {
         View root = binding.getRoot();
 
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-        numberOfHut=mRifugiViewModel.getNumberOfHut();
+        numberOfHut = mRifugiViewModel.getNumberOfHut();
 
-        Log.i("LTE",numberOfHut+"");
+        bookPages = new HashMap<>();
+
+        Log.i("LTE", numberOfHut + "");
         binding.next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-              toNextPage();
+                toNextPage();
             }
         });
 
@@ -55,68 +65,73 @@ public class BookFragment extends Fragment {
                 toPrevPage();
             }
         });
-
-        nextHut=1;
-        setPage(nextHut);
-
+        currentPage = 0;
+        setPagesMap();
+        setPage(currentPage);
         return root;
     }
 
-    private void setPage(int page){
-        if(page<=2){
-            binding.prev.setEnabled(false);
+    private void setPagesMap() {
+        List<HutGroup> groups = mRifugiViewModel.getNumberOfHutforEachDolomitcGroup();
+        for (HutGroup group : groups) {
+            List<Rifugio> huts = mRifugiViewModel.getListOfHutByDolomiticGroup(group.getGruppoDolomitico());
+            for (int i = 0; i < huts.size(); i += 2) {
+                List<Integer> hutsCode = new ArrayList<>();
+                hutsCode.add(huts.get(i).getCodiceRifugio());
+                if (i + 1 < huts.size()) {
+                    hutsCode.add(huts.get(i + 1).getCodiceRifugio());
+                }
+                bookPages.put(bookPages.size(), hutsCode);
+            }
         }
-        if(page>=numberOfHut-1){
+        Log.i("MAP", bookPages.values().toString());
+    }
+
+    private void setPage(int pageNumber) {
+        if (currentPage == bookPages.size()-1) {
             binding.next.setEnabled(false);
         }
-        mRifugiViewModel.getHutById(page).observe(getViewLifecycleOwner(), hut->{
-                currentGroup=hut.getGruppoDolomitico();
-                binding.title.setText(currentGroup);
-                binding.nameHut1.setText(hut.getNomeRifugio());
-                binding.visitDateLabel1.setText("Data visita:");
-                File file =new File(getContext().getFilesDir()+"/images/"+hut.getNomeImmagine().trim());
-                Log.i("LTE",file.getAbsolutePath()+"");
-                Bitmap bit = BitmapFactory.decodeFile(file.getAbsolutePath());
-                binding.imageHut1.setImageBitmap(bit);
-        });
-        page++;
+        if (currentPage == 0) {
+            binding.prev.setEnabled(false);
+        }
 
+        binding.pageNumber.setText((pageNumber+1)+"/"+bookPages.size());
         binding.secondCardView.setVisibility(View.VISIBLE);
-        mRifugiViewModel.getHutById(page).observe(getViewLifecycleOwner(), hut->{
-            if(currentGroup==null){
-                currentGroup=hut.getGruppoDolomitico();
-            }
-            if(currentGroup.equals(hut.getGruppoDolomitico())){
-                binding.nameHut2.setText(hut.getNomeRifugio());
-                binding.visitDateLabel2.setText("Data visita:");
-                File file =new File(getContext().getFilesDir()+"/images/"+hut.getNomeImmagine().trim());
-                Log.i("LTE",file.getAbsolutePath()+"");
-                Bitmap bit = BitmapFactory.decodeFile(file.getAbsolutePath());
-                binding.imageHut2.setImageBitmap(bit);
-            }else{
-                binding.secondCardView.setVisibility(View.INVISIBLE);
-            }
-        });
-        if(binding.secondCardView.getVisibility()!=View.INVISIBLE){
-            page++;
+        List<Integer> hutsId = bookPages.get(pageNumber);
+
+
+        Rifugio hut1 = mRifugiViewModel.getHutById(hutsId.get(0));
+        Bitmap bit1 = BitmapFactory.decodeFile(getContext().getFilesDir() + "/images/" + hut1.getNomeImmagine());
+        binding.imageHut1.setImageBitmap(bit1);
+        binding.nameHut1.setText(hut1.getNomeRifugio());
+        binding.visitDateLabel1.setText("Data Visita");
+        binding.title.setText(hut1.getGruppoDolomitico());
+
+        if (hutsId.size() == 1) {
+            binding.secondCardView.setVisibility(View.INVISIBLE);
+        } else {
+            Rifugio hut2 = mRifugiViewModel.getHutById(hutsId.get(1));
+            Bitmap bit2 = BitmapFactory.decodeFile(getContext().getFilesDir() + "/images/" + hut2.getNomeImmagine());
+            binding.imageHut2.setImageBitmap(bit2);
+            binding.nameHut2.setText(hut2.getNomeRifugio());
+            binding.visitDateLabel2.setText("Data Visita");
         }
-        nextHut=page;
     }
 
-    private void toNextPage(){
+    private void toNextPage() {
+        if (currentPage < bookPages.size()) {
+            currentPage++;
+            setPage(currentPage);
+        }
         binding.prev.setEnabled(true);
-        setPage(nextHut);
     }
 
-    private void toPrevPage(){
-        binding.prev.setEnabled(true);
-        Log.i("PAGE",nextHut+"");
-        if(binding.secondCardView.getVisibility()!=View.INVISIBLE){
-            nextHut-=4;
-        }else{
-            nextHut-=3;
+    private void toPrevPage() {
+        if (currentPage >= 1) {
+            currentPage--;
+            setPage(currentPage);
         }
-        Log.i("PAGE",nextHut+"");
-        setPage(nextHut);
+        binding.next.setEnabled(true);
     }
+
 }

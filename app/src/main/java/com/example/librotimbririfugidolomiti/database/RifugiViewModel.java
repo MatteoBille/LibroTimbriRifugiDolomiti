@@ -30,8 +30,10 @@ public class RifugiViewModel extends AndroidViewModel {
     public LiveData<List<Rifugio>> getAllRifugi() { return mAllRifugi; }
     public LiveData<Integer> getNumberOfDolomiticGroups() { return nGroups; }
     public LiveData<List<String>> getListOfDolomiticGroups(){ return allGroups; }
-    public LiveData<Rifugio> getHutById(int hutId){return mRepository.getHutById(hutId);}
+    public Rifugio getHutById(int hutId){return mRepository.getHutById(hutId);}
     public Integer getNumberOfHut(){return nHut;}
+    public List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mRepository.getNumberOfHutforEachDolomitcGroup();}
+    public List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mRepository.getListOfHutByDolomiticGroup(groupName);}
 
     public void insert(Rifugio word) { mRepository.insert(word); }
 }
