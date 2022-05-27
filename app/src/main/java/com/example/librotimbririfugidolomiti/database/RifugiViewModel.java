@@ -32,8 +32,11 @@ public class RifugiViewModel extends AndroidViewModel {
     public LiveData<List<String>> getListOfDolomiticGroups(){ return allGroups; }
     public Rifugio getHutById(int hutId){return mRepository.getHutById(hutId);}
     public Integer getNumberOfHut(){return nHut;}
+    public Integer getNumberOfHutVisited(){return mRepository.getNumberOfHutVisited();}
+    public String getLastVisitDay(){return mRepository.getLastVisitDay();}
     public List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mRepository.getNumberOfHutforEachDolomitcGroup();}
     public List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mRepository.getListOfHutByDolomiticGroup(groupName);}
+    public Integer setVisitTrueAndDate(String dataVisita,Integer idRifugio) {return mRepository.setVisitTrueAndDate(dataVisita,idRifugio);}
 
     public void insert(Rifugio word) { mRepository.insert(word); }
 }

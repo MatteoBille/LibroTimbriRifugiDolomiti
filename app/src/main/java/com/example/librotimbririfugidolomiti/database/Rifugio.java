@@ -32,20 +32,28 @@ public class Rifugio {
     @ColumnInfo(name = "NomeImmagine")
     private String NomeImmagine;
 
+    @NonNull
+    @ColumnInfo(name = "Visitato",defaultValue="0")
+    private Integer Visitato;
+
+    @ColumnInfo(name = "DataVisita")
+    private String DataVisita;
 
     public Rifugio() {
     }
 
-    public Rifugio(Double latitudine, Double longitudine, Integer codiceRifugio, String nomeRifugio, String gruppoDolomitico, String nomeImmagine) {
+    public Rifugio(Double latitudine, Double longitudine, Integer codiceRifugio, String nomeRifugio, String gruppoDolomitico, String nomeImmagine, Integer visitato, String dataVisita) {
         CodiceRifugio = codiceRifugio;
         NomeRifugio = nomeRifugio;
         Latitudine = latitudine;
         Longitudine = longitudine;
         GruppoDolomitico = gruppoDolomitico;
         NomeImmagine = nomeImmagine;
+        Visitato = visitato;
+        DataVisita = dataVisita;
     }
 
-    public void setCodiceRifugio(int codiceRifugio) {
+    public void setCodiceRifugio(Integer codiceRifugio) {
         CodiceRifugio = codiceRifugio;
     }
 
@@ -61,10 +69,21 @@ public class Rifugio {
         Longitudine = longitudine;
     }
 
-    public void setGruppoDolomitico(String gruppoDolomitico) { GruppoDolomitico = gruppoDolomitico; }
+    public void setGruppoDolomitico(String gruppoDolomitico) {
+        GruppoDolomitico = gruppoDolomitico;
+    }
 
-    public void setNomeImmagine(String nomeImmagine) { NomeImmagine = nomeImmagine; }
+    public void setNomeImmagine(String nomeImmagine) {
+        NomeImmagine = nomeImmagine;
+    }
 
+    public void setVisitato(Integer visitato) {
+        Visitato = visitato;
+    }
+
+    public void setDataVisita(String dataVisita) {
+        DataVisita = dataVisita;
+    }
 
     public Integer getCodiceRifugio() {
         return CodiceRifugio;
@@ -86,7 +105,15 @@ public class Rifugio {
         return GruppoDolomitico;
     }
 
-    public String getNomeImmagine() { return NomeImmagine; }
+    public String getNomeImmagine() {
+        return NomeImmagine;
+    }
 
+    public Integer getVisitato() {
+        return Visitato;
+    }
 
+    public String getDataVisita() {
+        return DataVisita;
+    }
 }

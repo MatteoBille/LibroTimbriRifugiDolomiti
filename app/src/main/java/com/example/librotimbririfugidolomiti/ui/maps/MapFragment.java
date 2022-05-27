@@ -27,6 +27,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -68,7 +70,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.i("LTE","CIAOOOOOO");
+        Log.i("LTE", "CIAOOOOOO");
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -95,12 +97,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             for (Rifugio hut : huts) {
                 Log.i("LTE", hut.getNomeImmagine());
-                Log.i("LTE", hut.getLatitudine()+"");
+                Log.i("LTE", hut.getLatitudine() + "");
                 double latitudine = hut.getLatitudine();
                 double longitudine = hut.getLongitudine();
                 LatLng tempLatLng = new LatLng(latitudine, longitudine);
                 rifugiLatLong.put(hut.getNomeRifugio(), tempLatLng);
-                mMap.addMarker(new MarkerOptions().position(tempLatLng).title(hut.getNomeRifugio()));
+                BitmapDescriptor bd;
+                if (hut.getVisitato() == 1) {
+                    bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                } else {
+                    bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                }
+                mMap.addMarker(new MarkerOptions().position(tempLatLng).icon(bd).title(hut.getNomeRifugio()));
             }
 
             LatLngBounds.Builder bc = new LatLngBounds.Builder();

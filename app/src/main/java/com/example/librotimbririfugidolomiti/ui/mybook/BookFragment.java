@@ -3,6 +3,7 @@ package com.example.librotimbririfugidolomiti.ui.mybook;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -54,17 +55,10 @@ public class BookFragment extends Fragment {
         bookPages = new HashMap<>();
 
         Log.i("LTE", numberOfHut + "");
-        binding.next.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                toNextPage();
-            }
-        });
+        binding.next.setOnClickListener(v -> toNextPage());
 
-        binding.prev.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                toPrevPage();
-            }
-        });
+        binding.prev.setOnClickListener(v -> toPrevPage());
+
         currentPage = 0;
         setPagesMap();
         setPage(currentPage);
@@ -106,6 +100,12 @@ public class BookFragment extends Fragment {
         binding.nameHut1.setText(hut1.getNomeRifugio());
         binding.visitDateLabel1.setText("Data Visita");
         binding.title.setText(hut1.getGruppoDolomitico());
+        Log.i("VISITATO1",hut1.getVisitato()+"");
+        if(hut1.getVisitato().equals(1)) {
+            binding.imageHut1overlay.setVisibility(View.VISIBLE);
+            binding.imageHut1overlay.setImageResource(R.drawable.timbro);
+            binding.visitDate1.setText(hut1.getDataVisita());
+        }
 
         if (hutsId.size() == 1) {
             binding.secondCardView.setVisibility(View.INVISIBLE);
@@ -115,10 +115,18 @@ public class BookFragment extends Fragment {
             binding.imageHut2.setImageBitmap(bit2);
             binding.nameHut2.setText(hut2.getNomeRifugio());
             binding.visitDateLabel2.setText("Data Visita");
+            Log.i("VISITATO2",hut2.getVisitato()+"");
+            if(hut2.getVisitato().equals(1)) {
+                binding.imageHut2overlay.setVisibility(View.VISIBLE);
+                binding.imageHut2overlay.setImageResource(R.drawable.timbro);
+                binding.visitDate2.setText(hut2.getDataVisita());
+            }
         }
     }
 
     private void toNextPage() {
+        binding.imageHut1overlay.setVisibility(View.INVISIBLE);
+        binding.imageHut2overlay.setVisibility(View.INVISIBLE);
         if (currentPage < bookPages.size()) {
             currentPage++;
             setPage(currentPage);
@@ -127,6 +135,8 @@ public class BookFragment extends Fragment {
     }
 
     private void toPrevPage() {
+        binding.imageHut1overlay.setVisibility(View.INVISIBLE);
+        binding.imageHut2overlay.setVisibility(View.INVISIBLE);
         if (currentPage >= 1) {
             currentPage--;
             setPage(currentPage);

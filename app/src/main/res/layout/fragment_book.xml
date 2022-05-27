@@ -5,25 +5,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="20"
     android:background="@drawable/background"
+    android:orientation="vertical"
+    android:weightSum="22"
     tools:context=".ui.mybook.BookFragment">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:text="TextView"
+        android:layout_weight="4"
         android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
         tools:text="@tools:sample/first_names" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
         android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="30dp"
         android:layout_weight="8">
 
         <LinearLayout
@@ -32,20 +34,38 @@
             android:orientation="vertical"
             android:weightSum="10">
 
-            <ImageView
-                android:id="@+id/imageHut1"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="8"
-                tools:src="@tools:sample/avatars" />
+                android:layout_weight="8">
+
+                <ImageView
+                    android:id="@+id/imageHut1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageHut1overlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignLeft="@id/imageHut1"
+                    android:layout_alignTop="@id/imageHut1"
+                    android:layout_alignRight="@id/imageHut1"
+                    android:layout_alignBottom="@id/imageHut1"
+                    android:background="@android:color/transparent"
+                    android:visibility="invisible" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/nameHut1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:gravity="center"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,9 +96,9 @@
         android:id="@+id/secondCardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="50dp"
-        android:layout_marginHorizontal="50dp"
         android:layout_weight="8">
 
         <LinearLayout
@@ -87,42 +107,60 @@
             android:orientation="vertical"
             android:weightSum="10">
 
-            <ImageView
-                android:id="@+id/imageHut2"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                tools:src="@tools:sample/avatars"
-                android:layout_weight="8"/>
+                android:layout_weight="8">
+
+                <ImageView
+                    android:id="@+id/imageHut2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageHut2overlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignLeft="@id/imageHut2"
+                    android:layout_alignTop="@id/imageHut2"
+                    android:layout_alignRight="@id/imageHut2"
+                    android:layout_alignBottom="@id/imageHut2"
+                    android:background="@android:color/transparent"
+                    android:visibility="invisible" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/nameHut2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:text="TextView"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:text="TextView"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/visitDateLabel2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="TextView"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:text="TextView" />
 
                 <TextView
                     android:id="@+id/visitDate2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="TextView"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:text="TextView" />
             </LinearLayout>
 
         </LinearLayout>
@@ -131,24 +169,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
         android:layout_weight="2"
-        android:weightSum="10">
+        android:orientation="horizontal"
+        android:weightSum="12">
 
         <Button
             android:id="@+id/prev"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:background="@drawable/arrowright"
+            android:background="@drawable/arrowleft" />
 
-            />
 
         <TextView
             android:id="@+id/pageNumber"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_weight="8"
             android:gravity="center"
             android:text="TextView" />
 
@@ -156,8 +193,9 @@
             android:id="@+id/next"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/arrowLeft"
             android:layout_weight="2"
+            android:background="@drawable/arrowright"
+
             />
     </LinearLayout>
 

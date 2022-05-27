@@ -39,8 +39,11 @@ class RifugiRepository {
     LiveData<List<String>> getListOfDolomiticGroups() { return allGroups; }
     Rifugio getHutById(int hutId){return mRifugiDao.getHutById(hutId);}
     Integer getNumberOfHut(){return nHut;}
+    Integer getNumberOfHutVisited(){return mRifugiDao.getNumberOfHutVisited();}
+    String getLastVisitDay(){return mRifugiDao.getLastVisitDay();}
     List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mRifugiDao.getNumberOfHutforEachDolomitcGroup();}
     List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mRifugiDao.getListOfHutByDolomiticGroup(groupName);}
+    Integer setVisitTrueAndDate(String dataVisita,Integer idRifugio) {return mRifugiDao.setVisitTrueAndDate(dataVisita,idRifugio);}
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
