@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.database.Rifugio;
+import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentVisitRifugioBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -63,7 +64,7 @@ public class VisitRifugio extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i("STATUS","CREATEVIEW");
-        // Inflate the layout for this fragment
+
         binding = FragmentVisitRifugioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
@@ -80,22 +81,19 @@ public class VisitRifugio extends Fragment {
 
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-
-
-
-
         });
         return root;
     }
 
 
     private void insertVisit() {
-        int id =getSmallDistanceHut().getValue().getCodiceRifugio();
-        Log.i("ID",id+"");
+        int idRifugio =getSmallDistanceHut().getValue().getCodiceRifugio();
+        Log.i("ID",idRifugio+"");
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String data = sdf.format(currentTime);
-        mRifugiViewModel.setVisitTrueAndDate(data,id);
+        String dataVisita = sdf.format(currentTime);
+        VisitaRifugio vis =new VisitaRifugio(1,idRifugio,dataVisita);
+        mRifugiViewModel.visitHut(1,idRifugio,dataVisita);
     }
 
     private void measureDistance(Location location) {
@@ -156,6 +154,7 @@ public class VisitRifugio extends Fragment {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
+                        Log.i("LOCATION",location+"");
                         if (location != null) {
                             measureDistance(location);
                         }

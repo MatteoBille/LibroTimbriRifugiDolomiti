@@ -1,6 +1,7 @@
 package com.example.librotimbririfugidolomiti.database;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 class RifugiRepository {
 
-    private RifugiDao mRifugiDao;
+    private DatabaseDao mDatabaseDao;
     private LiveData<List<Rifugio>> mAllRifugi;
     private LiveData<Integer> nGroups;
     private LiveData<List<String>> allGroups;
@@ -21,11 +22,11 @@ class RifugiRepository {
     // https://github.com/googlesamples
     RifugiRepository(Application application) {
         RifugiRoomDatabase db = RifugiRoomDatabase.getDatabase(application);
-        mRifugiDao = db.rifugioDao();
-        mAllRifugi = mRifugiDao.getAllHut();
-        nGroups = mRifugiDao.getNumberOfDolomiticGroups();
-        allGroups=mRifugiDao.getListOfDolomiticGroups();
-        nHut= mRifugiDao.getNumberOfHut();
+        mDatabaseDao = db.rifugioDao();
+        mAllRifugi = mDatabaseDao.getAllHut();
+        nGroups = mDatabaseDao.getNumberOfDolomiticGroups();
+        allGroups= mDatabaseDao.getListOfDolomiticGroups();
+        nHut= mDatabaseDao.getNumberOfHut();
     }
 
     // Room executes all queries on a separate thread.
@@ -37,19 +38,30 @@ class RifugiRepository {
         return nGroups;
     }
     LiveData<List<String>> getListOfDolomiticGroups() { return allGroups; }
-    Rifugio getHutById(int hutId){return mRifugiDao.getHutById(hutId);}
+    Rifugio getHutById(int hutId){return mDatabaseDao.getHutById(hutId);}
     Integer getNumberOfHut(){return nHut;}
-    Integer getNumberOfHutVisited(){return mRifugiDao.getNumberOfHutVisited();}
-    String getLastVisitDay(){return mRifugiDao.getLastVisitDay();}
-    List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mRifugiDao.getNumberOfHutforEachDolomitcGroup();}
-    List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mRifugiDao.getListOfHutByDolomiticGroup(groupName);}
-    Integer setVisitTrueAndDate(String dataVisita,Integer idRifugio) {return mRifugiDao.setVisitTrueAndDate(dataVisita,idRifugio);}
+    Integer getNumberOfHutVisited(){return mDatabaseDao.getNumberOfHutVisited();}
+    String getLastVisitDay(){return mDatabaseDao.getLastVisitDay();}
+    List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mDatabaseDao.getNumberOfHutforEachDolomitcGroup();}
+    List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mDatabaseDao.getListOfHutByDolomiticGroup(groupName);}
+
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
+
+    public Long insert(VisitaRifugio visitaRifugio){
+        return  mDatabaseDao.insert(visitaRifugio);
+    }
     void insert(Rifugio rifugio) {
         RifugiRoomDatabase.databaseWriteExecutor.execute(() -> {
-            mRifugiDao.insert(rifugio);
+            mDatabaseDao.insert(rifugio);
         });
+    }
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita);};
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita,info);};
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,Integer rating){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita,rating);};
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info,Integer rating){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita,info,rating);};
+
+    public Integer isVisited(int codicePersona, Integer codiceRifugio) {return mDatabaseDao.isVisited(codicePersona,codiceRifugio);
     }
 }

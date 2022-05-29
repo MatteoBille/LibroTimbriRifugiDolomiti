@@ -36,7 +36,16 @@ public class RifugiViewModel extends AndroidViewModel {
     public String getLastVisitDay(){return mRepository.getLastVisitDay();}
     public List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mRepository.getNumberOfHutforEachDolomitcGroup();}
     public List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mRepository.getListOfHutByDolomiticGroup(groupName);}
-    public Integer setVisitTrueAndDate(String dataVisita,Integer idRifugio) {return mRepository.setVisitTrueAndDate(dataVisita,idRifugio);}
+
+    public Long insert(VisitaRifugio visitaRifugio){return mRepository.insert(visitaRifugio);}
 
     public void insert(Rifugio word) { mRepository.insert(word); }
+
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita){mRepository.visitHut(codicePersona,codiceRifugio,dataVisita);};
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info){mRepository.visitHut(codicePersona,codiceRifugio,dataVisita,info);};
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,Integer rating){mRepository.visitHut(codicePersona,codiceRifugio,dataVisita,rating);};
+
+    public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info,Integer rating){mRepository.visitHut(codicePersona,codiceRifugio,dataVisita,info,rating);};
+
+    public Integer numberOfVisitByHutId(int codicePersona, Integer codiceRifugio) {return mRepository.isVisited(codicePersona,codiceRifugio);}
 }

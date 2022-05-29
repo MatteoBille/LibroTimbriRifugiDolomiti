@@ -1,9 +1,7 @@
 package com.example.librotimbririfugidolomiti.ui.mybook;
 
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,17 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.HutGroup;
-import com.example.librotimbririfugidolomiti.database.RifugiDao;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.database.Rifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentBookBinding;
-import com.example.librotimbririfugidolomiti.databinding.FragmentListofallhutsBinding;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,26 +94,31 @@ public class BookFragment extends Fragment {
         binding.nameHut1.setText(hut1.getNomeRifugio());
         binding.visitDateLabel1.setText("Data Visita");
         binding.title.setText(hut1.getGruppoDolomitico());
-        Log.i("VISITATO1",hut1.getVisitato()+"");
-        if(hut1.getVisitato().equals(1)) {
+        int numberOfVisit1 = mRifugiViewModel.numberOfVisitByHutId(1, hut1.getCodiceRifugio());
+
+        Log.i("VISITATO1",numberOfVisit1+"");
+        if(numberOfVisit1>0) {
             binding.imageHut1overlay.setVisibility(View.VISIBLE);
             binding.imageHut1overlay.setImageResource(R.drawable.timbro);
-            binding.visitDate1.setText(hut1.getDataVisita());
+            //binding.visitDate1.setText(hut1.getDataVisita());
         }
 
         if (hutsId.size() == 1) {
             binding.secondCardView.setVisibility(View.INVISIBLE);
         } else {
+
             Rifugio hut2 = mRifugiViewModel.getHutById(hutsId.get(1));
+            int numberOfVisit2 = mRifugiViewModel.numberOfVisitByHutId(1, hut2.getCodiceRifugio());
             Bitmap bit2 = BitmapFactory.decodeFile(getContext().getFilesDir() + "/images/" + hut2.getNomeImmagine());
             binding.imageHut2.setImageBitmap(bit2);
             binding.nameHut2.setText(hut2.getNomeRifugio());
             binding.visitDateLabel2.setText("Data Visita");
-            Log.i("VISITATO2",hut2.getVisitato()+"");
-            if(hut2.getVisitato().equals(1)) {
+
+            Log.i("VISITATO2",numberOfVisit2+"");
+            if(numberOfVisit2>0) {
                 binding.imageHut2overlay.setVisibility(View.VISIBLE);
                 binding.imageHut2overlay.setImageResource(R.drawable.timbro);
-                binding.visitDate2.setText(hut2.getDataVisita());
+                //binding.visitDate2.setText(hut2.getVisitato());
             }
         }
     }

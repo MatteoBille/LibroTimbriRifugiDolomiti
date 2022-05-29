@@ -4,15 +4,12 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -37,7 +34,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -103,7 +99,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng tempLatLng = new LatLng(latitudine, longitudine);
                 rifugiLatLong.put(hut.getNomeRifugio(), tempLatLng);
                 BitmapDescriptor bd;
-                if (hut.getVisitato() == 1) {
+                int numberOfVisit = mRifugiViewModel.numberOfVisitByHutId(1, hut.getCodiceRifugio());
+                if (numberOfVisit > 0) {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
                 } else {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
