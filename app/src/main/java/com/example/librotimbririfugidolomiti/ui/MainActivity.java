@@ -1,14 +1,16 @@
-package com.example.librotimbririfugidolomiti;
+package com.example.librotimbririfugidolomiti.ui;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.librotimbririfugidolomiti.database.RifugiRoomDatabase;
+import com.example.librotimbririfugidolomiti.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,13 +18,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.room.Room;
 
 import com.example.librotimbririfugidolomiti.databinding.ActivityMainBinding;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,28 +33,41 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.INTERNET
             };
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         checkPermissions();
         super.onCreate(savedInstanceState);
-        copyAssets("images");
-        getSupportActionBar().hide();
+        sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        boolean firstTime = sharedPreferences.getBoolean("firstTime", true);
+        Log.i("FIRST", firstTime + "");
+        if (firstTime) {
+            copyAssets("images");
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+            startActivity(intent);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_visita, R.id.navigation_map)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+            myEdit.commit();
+        } else {
 
+            getSupportActionBar().hide();
 
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+
+            BottomNavigationView navView = findViewById(R.id.nav_view);
+            // Passing each menu ID as a set of Ids because each
+            // menu should be considered as top level destinations.
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_home, R.id.navigation_visita, R.id.navigation_map)
+                    .build();
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(binding.navView, navController);
+
+        }
     }
 
     private void checkPermissions() {
@@ -67,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             ++iter;
         }
     }
+
     private void copyAssets(String path) {
         String[] list;
         try {

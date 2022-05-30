@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti;
+package com.example.librotimbririfugidolomiti.ui;
 
 import android.util.Log;
 

@@ -40,12 +40,13 @@ class RifugiRepository {
     LiveData<List<String>> getListOfDolomiticGroups() { return allGroups; }
     Rifugio getHutById(int hutId){return mDatabaseDao.getHutById(hutId);}
     Integer getNumberOfHut(){return nHut;}
-    Integer getNumberOfHutVisited(){return mDatabaseDao.getNumberOfHutVisited();}
+    Integer getNumberOfHutVisited(Integer codicePersona){return mDatabaseDao.getNumberOfHutVisited(codicePersona);}
     String getLastVisitDay(){return mDatabaseDao.getLastVisitDay();}
     List<HutGroup> getNumberOfHutforEachDolomitcGroup(){return mDatabaseDao.getNumberOfHutforEachDolomitcGroup();}
     List<Rifugio> getListOfHutByDolomiticGroup(String groupName){return mDatabaseDao.getListOfHutByDolomiticGroup(groupName);}
-
-
+    Integer getNumberOfVisitByHut(Integer codiceRifugio,Integer codicePersona){return mDatabaseDao.getNumberOfVisitByHut(codiceRifugio,codicePersona);}
+    Integer getNumberOfUsers(){return mDatabaseDao.getNumberOfUsers();};
+    Persona getPersonById(Integer codicePersona){return mDatabaseDao.getPersonById(codicePersona);};
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
 
@@ -57,6 +58,11 @@ class RifugiRepository {
             mDatabaseDao.insert(rifugio);
         });
     }
+    public Long insert(Persona persona){
+        return mDatabaseDao.insert(persona);
+    }
+
+
     public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita);};
     public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita,info);};
     public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,Integer rating){mDatabaseDao.visitHut(codicePersona,codiceRifugio,dataVisita,rating);};

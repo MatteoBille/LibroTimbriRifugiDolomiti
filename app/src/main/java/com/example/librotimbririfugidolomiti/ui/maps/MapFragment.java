@@ -3,6 +3,8 @@ package com.example.librotimbririfugidolomiti.ui.maps;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FragmentMapBinding binding;
     private GoogleMap mMap;
     private RifugiViewModel mRifugiViewModel;
+    SharedPreferences sharedPreferences;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,7 +69,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.i("LTE", "CIAOOOOOO");
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -99,7 +101,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng tempLatLng = new LatLng(latitudine, longitudine);
                 rifugiLatLong.put(hut.getNomeRifugio(), tempLatLng);
                 BitmapDescriptor bd;
-                int numberOfVisit = mRifugiViewModel.numberOfVisitByHutId(1, hut.getCodiceRifugio());
+
+                sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+                int codicePersona=sharedPreferences.getInt("codicePersona",-1);
+
+                int numberOfVisit = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut.getCodiceRifugio());
                 if (numberOfVisit > 0) {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
                 } else {

@@ -18,16 +18,15 @@ public class Persona {
     private String NomeCognome;
 
     @NonNull
-    @ColumnInfo(name = "Password")
-    private String Password;
+    @ColumnInfo(name = "Email")
+    private String Email;
 
     public Persona() {
     }
 
-    public Persona(@NonNull Integer codicePersona, @NonNull String nomeCognome, @NonNull String password) {
-        CodicePersona = codicePersona;
+    public Persona(@NonNull String nomeCognome, @NonNull String email) {
         NomeCognome = nomeCognome;
-        Password = password;
+        Email = email;
     }
 
     public void setCodicePersona(@NonNull Integer codicePersona) {
@@ -38,8 +37,8 @@ public class Persona {
         NomeCognome = nomeCognome;
     }
 
-    public void setPassword(@NonNull String password) {
-        Password = password;
+    public void setEmail(@NonNull String email) {
+        Email = email;
     }
 
     @NonNull
@@ -53,7 +52,7 @@ public class Persona {
     }
 
     @NonNull
-    public String getPassword() {
-        return Password;
+    public String getEmail() {
+        return Email;
     }
 }

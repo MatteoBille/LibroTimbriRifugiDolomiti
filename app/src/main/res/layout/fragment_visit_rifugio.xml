@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,28 +21,58 @@
             android:text="Rifugio più vicino"
             android:gravity="center_vertical|center_horizontal"/>
 
+
         <TextView
-            android:id="@+id/nomeRifugio"
+                android:id="@+id/nomeRifugio"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="TextView"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+
+    <TextView
+            android:id="@+id/numeroVisite"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:text="TextView"
-            android:textSize="25dp"
-            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textSize="10dp"
             android:gravity="center_vertical|center_horizontal"/>
+
 
     <TextView
         android:id="@+id/distanza"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
+        android:textSize="20dp"
         android:text="TextView"
-        android:gravity="center_horizontal"/>
-    <Button
-        android:id="@+id/button"
+        android:gravity="center_vertical|center_horizontal"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:text="Button" />
+        android:orientation="horizontal"
+        android:layout_weight="2">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Visita!" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </LinearLayout>
