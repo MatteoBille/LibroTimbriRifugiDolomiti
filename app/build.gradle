@@ -35,7 +35,7 @@ dependencies {
     // Dependencies for working with Architecture components
     // You'll probably have to update the version numbers in build.gradle (Project)
 
-    // Room components
+    implementation 'com.google.android.material:material:1.0.0'
     implementation "androidx.room:room-runtime:2.3.0"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'

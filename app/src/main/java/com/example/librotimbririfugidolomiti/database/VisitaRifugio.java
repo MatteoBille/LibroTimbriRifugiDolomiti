@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName="VisiteRifugi",primaryKeys = {"CodicePersona","CodiceRifugio","DataVisita"})
 public class VisitaRifugio {
 
@@ -100,5 +102,18 @@ public class VisitaRifugio {
     @NonNull
     public Integer getRating() {
         return Rating;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VisitaRifugio that = (VisitaRifugio) o;
+        return CodiceRifugio.equals(that.CodiceRifugio) && CodicePersona.equals(that.CodicePersona) && DataVisita.equals(that.DataVisita) && Objects.equals(Info, that.Info) && Objects.equals(Rating, that.Rating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CodiceRifugio, CodicePersona, DataVisita, Info, Rating);
     }
 }

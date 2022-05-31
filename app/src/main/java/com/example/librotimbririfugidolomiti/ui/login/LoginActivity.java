@@ -1,9 +1,8 @@
-package com.example.librotimbririfugidolomiti.ui;
+package com.example.librotimbririfugidolomiti.ui.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.Persona;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.databinding.ActivityLoginBinding;
-import com.example.librotimbririfugidolomiti.databinding.ActivityMyBookBinding;
+import com.example.librotimbririfugidolomiti.ui.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.ui;
+package com.example.librotimbririfugidolomiti.ui.book;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.databinding.ActivityMyBookBinding;
-import com.example.librotimbririfugidolomiti.ui.mybook.BookFragment;
 
 public class MyBookActivity extends AppCompatActivity {
     private ActivityMyBookBinding binding;

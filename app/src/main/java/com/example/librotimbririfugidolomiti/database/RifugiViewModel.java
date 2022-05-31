@@ -42,7 +42,7 @@ public class RifugiViewModel extends AndroidViewModel {
     public void insert(Rifugio word) { mRepository.insert(word); }
     public Long insert(Persona persona){return mRepository.insert(persona);}
     public Persona getPersonById(Integer codicePersona){return mRepository.getPersonById(codicePersona);};
-
+    public List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio,Integer codicePersona){return mRepository.getVisitsByHutAndPerson(codiceRifugio,codicePersona);};
 
     public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita){mRepository.visitHut(codicePersona,codiceRifugio,dataVisita);};
     public void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info){mRepository.visitHut(codicePersona,codiceRifugio,dataVisita,info);};

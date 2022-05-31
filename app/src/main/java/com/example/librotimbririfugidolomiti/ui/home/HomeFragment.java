@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.database.Persona;
-import com.example.librotimbririfugidolomiti.ui.MyBookActivity;
+import com.example.librotimbririfugidolomiti.ui.book.MyBookActivity;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.databinding.FragmentHomeBinding;
 
@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         binding.lastVisit.setText(date);
 
         binding.goToBook.setOnClickListener(e->{
-            Intent intent= new Intent(root.getContext(),MyBookActivity.class);
+            Intent intent= new Intent(root.getContext(), MyBookActivity.class);
             startActivity(intent);
         });
         return root;

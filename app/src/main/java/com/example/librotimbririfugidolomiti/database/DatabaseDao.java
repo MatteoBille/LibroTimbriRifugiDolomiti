@@ -56,6 +56,8 @@ public interface DatabaseDao {
     @Query("SELECT * FROM Persone WHERE CodicePersona=:codicePersona")
     Persona getPersonById(Integer codicePersona);
 
+    @Query("SELECT * FROM VisiteRifugi WHERE CodiceRifugio=:codiceRifugio AND CodicePersona=:codicePersona")
+    List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio,Integer codicePersona);
 
 
     @Query("INSERT INTO VisiteRifugi(CodicePersona,CodiceRifugio,DataVisita) VALUES(:codicePersona,:codiceRifugio,:dataVisita)")

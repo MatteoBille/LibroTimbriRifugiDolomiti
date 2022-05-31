@@ -49,9 +49,6 @@ public class AllTheHutFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-        // Add an observer on the LiveData returned by getAlphabetizedWords.
-        // The onChanged() method fires when the observed data changes and the activity is
-        // in the foreground.
         mRifugiViewModel.getAllRifugi().observe(getViewLifecycleOwner(), rifugi -> {
             // Update the cached copy of the words in the adapter.
             adapter.submitList(rifugi);

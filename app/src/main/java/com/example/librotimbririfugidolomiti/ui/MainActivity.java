@@ -1,14 +1,15 @@
 package com.example.librotimbririfugidolomiti.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.librotimbririfugidolomiti.FileHelper;
 import com.example.librotimbririfugidolomiti.R;
+import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
