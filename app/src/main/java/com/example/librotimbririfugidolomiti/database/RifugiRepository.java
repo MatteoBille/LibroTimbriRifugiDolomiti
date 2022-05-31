@@ -8,9 +8,9 @@ import java.util.List;
 
 class RifugiRepository {
 
-    private DatabaseVisiteRifugiDao databaseVisiteRifugiDao;
-    private DatabasePersoneDao databasePersoneDao;
-    private DatabaseRifugiDao databaseRifugiDao;
+    final private DatabaseVisiteRifugiDao databaseVisiteRifugiDao;
+    final private DatabasePersoneDao databasePersoneDao;
+    final private DatabaseRifugiDao databaseRifugiDao;
 
 
     RifugiRepository(Application application) {
@@ -78,9 +78,7 @@ class RifugiRepository {
     }
 
     void insert(Rifugio rifugio) {
-        RifugiRoomDatabase.databaseWriteExecutor.execute(() -> {
-            databaseRifugiDao.insert(rifugio);
-        });
+        RifugiRoomDatabase.databaseWriteExecutor.execute(() -> databaseRifugiDao.insert(rifugio));
     }
 
     public Long insert(Persona persona) {

@@ -11,9 +11,6 @@ import java.util.List;
 @Dao
 public interface DatabaseRifugiDao {
 
-    @Query("DELETE FROM Rifugi")
-    void deleteAll();
-
     @Query("SELECT * FROM Rifugi")
     LiveData<List<Rifugio>> getAllHut();
 
