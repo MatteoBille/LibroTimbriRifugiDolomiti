@@ -16,7 +16,9 @@ import java.util.concurrent.Executors;
 }, version = 1, exportSchema = false)
 public abstract class RifugiRoomDatabase extends RoomDatabase {
 
-    public abstract DatabaseDao rifugioDao();
+    public abstract DatabaseVisiteRifugiDao visiteRifugiDao();
+    public abstract DatabasePersoneDao personeDao();
+    public abstract DatabaseRifugiDao rifugiDao();
 
     private static volatile RifugiRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
