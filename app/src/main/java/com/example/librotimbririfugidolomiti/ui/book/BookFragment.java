@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -93,53 +96,43 @@ public class BookFragment extends Fragment {
         binding.pageNumber.setText(formatted);
 
         binding.secondCardView.setVisibility(View.VISIBLE);
-        List<Integer> hutsId = bookPages.get(pageNumber);
+        List<Integer> hutsInThisPage = bookPages.get(pageNumber);
 
-
-        Rifugio hut1 = mRifugiViewModel.getHutById(hutsId.get(0));
         int codicePersona = sharedPreferences.getInt("codicePersona", -1);
-        if (codicePersona == -1) {
-            //TODO:exception
-        }
-        Bitmap bit1 = BitmapFactory.decodeFile(requireContext().getFilesDir() + "/images/" + hut1.getNomeImmagine());
-        binding.imageHut1.setImageBitmap(bit1);
-        binding.nameHut1.setText(hut1.getNomeRifugio());
+
+        Rifugio hut1 = mRifugiViewModel.getHutById(hutsInThisPage.get(0));
         binding.title.setText(hut1.getGruppoDolomitico());
-        sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-        int numberOfVisit1 = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut1.getCodiceRifugio());
+        setCardviewElementHut(hut1, codicePersona, binding.imageHut1, binding.imageHut1overlay, binding.nameHut1, binding.firstCardView);
 
-        Log.i("VISITATO1", numberOfVisit1 + "");
-        if (numberOfVisit1 > 0) {
-            binding.imageHut1overlay.setVisibility(View.VISIBLE);
-            binding.imageHut1overlay.setImageResource(R.drawable.timbro);
-        }
 
-        binding.firstCardView.setOnClickListener((e) -> {
-            Log.i("CODID", hut1.getCodiceRifugio() + "");
-            openHutDetailsActivity(hut1.getCodiceRifugio());
-        });
-
-        if (hutsId.size() == 1) {
+        if (hutsInThisPage.size() == 1) {
             binding.secondCardView.setVisibility(View.INVISIBLE);
         } else {
-
-            Rifugio hut2 = mRifugiViewModel.getHutById(hutsId.get(1));
-            int numberOfVisit2 = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut2.getCodiceRifugio());
-            Bitmap bit2 = BitmapFactory.decodeFile(getContext().getFilesDir() + "/images/" + hut2.getNomeImmagine());
-            binding.imageHut2.setImageBitmap(bit2);
-            binding.nameHut2.setText(hut2.getNomeRifugio());
-
-            Log.i("VISITATO2", numberOfVisit2 + "");
-            if (numberOfVisit2 > 0) {
-                binding.imageHut2overlay.setVisibility(View.VISIBLE);
-                binding.imageHut2overlay.setImageResource(R.drawable.timbro);
-            }
-            binding.secondCardView.setOnClickListener((e) -> {
-                openHutDetailsActivity(hut2.getCodiceRifugio());
-            });
+            Rifugio hut2 = mRifugiViewModel.getHutById(hutsInThisPage.get(1));
+            setCardviewElementHut(hut2, codicePersona, binding.imageHut2, binding.imageHut2overlay, binding.nameHut2, binding.secondCardView);
         }
 
+    }
 
+    private void setCardviewElementHut(Rifugio hut, int codicePersona, ImageView im1, ImageView imOverlay, TextView text, CardView cardView) {
+
+        Bitmap bit = BitmapFactory.decodeFile(requireContext().getFilesDir() + "/images/" + hut.getNomeImmagine());
+        im1.setImageBitmap(bit);
+        text.setText(hut.getNomeRifugio());
+
+        sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+
+        int numberOfVisit1 = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut.getCodiceRifugio());
+
+        if (numberOfVisit1 > 0) {
+            imOverlay.setVisibility(View.VISIBLE);
+            imOverlay.setImageResource(R.drawable.timbro);
+        }
+
+        cardView.setOnClickListener((e) -> {
+            Log.i("CODID", hut.getCodiceRifugio() + "");
+            openHutDetailsActivity(hut.getCodiceRifugio());
+        });
     }
 
     private boolean isFirstPage() {
