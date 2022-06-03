@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.ui.listofhut;
+package com.example.librotimbririfugidolomiti.ui.sharing;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.librotimbririfugidolomiti.R;
 
-public class RifugiViewHolder extends RecyclerView.ViewHolder {
+public class BookViewHolder extends RecyclerView.ViewHolder {
     private final TextView wordItemView;
 
-    private RifugiViewHolder(View itemView) {
+    private BookViewHolder(View itemView) {
         super(itemView);
         wordItemView = itemView.findViewById(R.id.textView);
     }
@@ -21,9 +21,10 @@ public class RifugiViewHolder extends RecyclerView.ViewHolder {
         wordItemView.setText(text);
     }
 
-    static RifugiViewHolder create(ViewGroup parent) {
+    static BookViewHolder create(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_item, parent, false);
-        return new RifugiViewHolder(view);
+
+        return new BookViewHolder(view);
     }
 }

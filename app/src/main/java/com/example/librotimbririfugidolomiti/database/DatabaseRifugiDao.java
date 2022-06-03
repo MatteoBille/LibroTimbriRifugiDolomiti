@@ -28,4 +28,7 @@ public interface DatabaseRifugiDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Rifugio rifugio);
+
+    @Query("SELECT CodiceRifugio FROM Rifugi")
+    List<Integer> getHutIds();
 }

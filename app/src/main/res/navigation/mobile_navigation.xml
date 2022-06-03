@@ -22,4 +22,9 @@
         android:name="com.example.librotimbririfugidolomiti.ui.maps.MapFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/navigation_sharing"
+        android:name="com.example.librotimbririfugidolomiti.ui.sharing.SharingFragment"
+        android:label="@string/sharing"
+        tools:layout="@layout/fragment_sharing" />
 </navigation>

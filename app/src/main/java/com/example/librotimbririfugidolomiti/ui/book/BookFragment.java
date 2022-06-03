@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.HutGroup;
+import com.example.librotimbririfugidolomiti.database.Persona;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.database.Rifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentBookBinding;
@@ -38,24 +39,35 @@ public class BookFragment extends Fragment {
 
     Map<Integer, List<Integer>> bookPages;
     private SharedPreferences sharedPreferences;
+    String codicePersona;
 
     public BookFragment() {
     }
 
 
+    public static BookFragment newInstance(String codicePersona, boolean obtained) {
+        BookFragment myFragment = new BookFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("obtained", obtained);
+        args.putString("codicePersona", codicePersona);
+        myFragment.setArguments(args);
+        return myFragment;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentBookBinding.inflate(inflater, container, false);
 
         View root = binding.getRoot();
 
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-
         sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-        if (sharedPreferences == null) {
-            //TODO:throw exception
-        }
+        codicePersona = getArguments().getString("codicePersona");
+
+        Persona owner = mRifugiViewModel.getPersonById(codicePersona);
+        binding.nomePersona.setText(owner.getNomeCognome());
         bookPages = setPagesMap();
 
         binding.next.setOnClickListener(v -> toNextPage());
@@ -63,6 +75,7 @@ public class BookFragment extends Fragment {
 
         currentPage = 0;
         setPage(currentPage);
+
         return root;
     }
 
@@ -98,7 +111,6 @@ public class BookFragment extends Fragment {
         binding.secondCardView.setVisibility(View.VISIBLE);
         List<Integer> hutsInThisPage = bookPages.get(pageNumber);
 
-        int codicePersona = sharedPreferences.getInt("codicePersona", -1);
 
         Rifugio hut1 = mRifugiViewModel.getHutById(hutsInThisPage.get(0));
         binding.title.setText(hut1.getGruppoDolomitico());
@@ -114,7 +126,7 @@ public class BookFragment extends Fragment {
 
     }
 
-    private void setCardviewElementHut(Rifugio hut, int codicePersona, ImageView im1, ImageView imOverlay, TextView text, CardView cardView) {
+    private void setCardviewElementHut(Rifugio hut, String codicePersona, ImageView im1, ImageView imOverlay, TextView text, CardView cardView) {
 
         Bitmap bit = BitmapFactory.decodeFile(requireContext().getFilesDir() + "/images/" + hut.getNomeImmagine());
         im1.setImageBitmap(bit);
@@ -146,6 +158,10 @@ public class BookFragment extends Fragment {
     private void openHutDetailsActivity(Integer codiceRifugio) {
 
         Intent intent = new Intent(getActivity(), HutDetailActivity.class);
+        if (getArguments() != null) {
+            intent.putExtra("codicePersona", codicePersona);
+            intent.putExtra("obtained", getArguments().getBoolean("obtained"));
+        }
         intent.putExtra("codiceRifugio", codiceRifugio);
         startActivity(intent);
     }

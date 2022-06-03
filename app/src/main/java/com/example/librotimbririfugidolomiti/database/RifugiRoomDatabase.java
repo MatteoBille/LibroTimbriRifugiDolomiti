@@ -12,13 +12,17 @@ import java.util.concurrent.Executors;
 @Database(entities = {
         Rifugio.class,
         Persona.class,
-        VisitaRifugio.class
+        VisitaRifugio.class,
+        CondivisioneLibro.class
 }, version = 1, exportSchema = false)
 public abstract class RifugiRoomDatabase extends RoomDatabase {
 
     public abstract DatabaseVisiteRifugiDao visiteRifugiDao();
     public abstract DatabasePersoneDao personeDao();
+
     public abstract DatabaseRifugiDao rifugiDao();
+
+    public abstract DatabaseCondivisioneLibroDao condivisioneLibroDao();
 
     private static volatile RifugiRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;

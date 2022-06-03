@@ -1,29 +1,18 @@
 package com.example.librotimbririfugidolomiti.ui.visithut;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Entity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.media.Rating;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -31,6 +20,9 @@ import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
@@ -41,6 +33,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -63,9 +56,10 @@ public class VisitRifugio extends Fragment {
     Map<Double, Rifugio> synchronizedDistanzaRifugio = Collections.synchronizedSortedMap(new TreeMap<>());
     boolean viewOpen;
     SharedPreferences sharedPreferences;
+    FirebaseFirestore firebaseDatabase;
 
-    private Handler mHandler = new Handler();
-    private Runnable checkDistanceThread = new Runnable() {
+    private final Handler mHandler = new Handler();
+    private final Runnable checkDistanceThread = new Runnable() {
         @Override
         public void run() {
             getLocation();
@@ -88,6 +82,7 @@ public class VisitRifugio extends Fragment {
         View root = binding.getRoot();
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
 
+        binding.button.setEnabled(false);
         binding.button.setOnClickListener(v -> openVisitPopup());
 
         rifugesLocation = new HashMap<>();
@@ -98,7 +93,6 @@ public class VisitRifugio extends Fragment {
                 rifugesLocation.put(tempCord, hut);
             }
             viewOpen = true;
-
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
         });
@@ -112,33 +106,32 @@ public class VisitRifugio extends Fragment {
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        //Make Inactive Items Outside Of PopupWindow
         boolean focusable = true;
-
-        //Create a window with our parameters
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        //Set the location of the window on the screen
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
         ((TextView) popupView.findViewById(R.id.hutName)).setText(hut.getValue().getNomeRifugio());
         ((Button) popupView.findViewById(R.id.visitButton)).setOnClickListener(e -> {
-            int idRifugio = hut.getValue().getCodiceRifugio();
-            Log.i("ID", idRifugio + "");
-            Date currentTime = Calendar.getInstance().getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String dataVisita = sdf.format(currentTime);
-
-            String info = ((EditText) popupView.findViewById(R.id.visitDescription)).getText().toString();
-            Log.i("INSERT", info);
-            Integer star = Math.round(((RatingBar) popupView.findViewById(R.id.ratingBar)).getRating());
-            Log.i("INSERT", star + "");
-            int codicePersona=sharedPreferences.getInt("codicePersona",-1);
-            mRifugiViewModel.visitHut(codicePersona, idRifugio, dataVisita, info, star);
-            popupWindow.dismiss();
+            saveVisitInDb(hut, popupView, popupWindow);
         });
 
 
+    }
+
+    private void saveVisitInDb(Map.Entry<Double, Rifugio> hut, View popupView, PopupWindow popupWindow) {
+        int idRifugio = hut.getValue().getCodiceRifugio();
+        Log.i("ID", idRifugio + "");
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dataVisita = sdf.format(currentTime);
+
+
+        String info = ((EditText) popupView.findViewById(R.id.visitDescription)).getText().toString();
+        Integer star = Math.round(((RatingBar) popupView.findViewById(R.id.ratingBar)).getRating());
+        String codicePersona = sharedPreferences.getString("codicePersona", null);
+
+        mRifugiViewModel.visitHut(codicePersona, idRifugio, dataVisita, info, star);
+        popupWindow.dismiss();
     }
 
     private void measureDistance(Location location) {
@@ -147,25 +140,38 @@ public class VisitRifugio extends Fragment {
             Double distance = getDistanceInMeter(entry.getKey(), location);
             synchronizedDistanzaRifugio.put(distance, entry.getValue());
         }
-        String formattedDistance= formatDistance(getSmallDistanceHut().getKey());
+        String formattedDistance = formatDistance(getSmallDistanceHut().getKey());
         binding.distanza.setText(formattedDistance);
         binding.nomeRifugio.setText(getSmallDistanceHut().getValue().getNomeRifugio());
 
-        int nVisit = mRifugiViewModel.getNumberOfVisitByHut(getSmallDistanceHut().getValue().getCodiceRifugio(), 1);
+        String codicePersona = sharedPreferences.getString("codicePersona", null);
+
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dataVisita = sdf.format(currentTime);
+        VisitaRifugio visitaRifugio = mRifugiViewModel.getVisitsByHutPersonAndDate(getSmallDistanceHut().getValue().getCodiceRifugio(), codicePersona, dataVisita);
+        Log.i("VISITA", visitaRifugio + "");
+        if (visitaRifugio != null) {
+            binding.button.setEnabled(false);
+        } else {
+            binding.button.setEnabled(true);
+
+
+            if (getSmallDistanceHut().getKey() > 100) {
+                binding.button.setEnabled(false);
+                binding.distanza.setTextColor(Color.RED);
+            } else {
+                binding.button.setEnabled(true);
+                binding.distanza.setTextColor(Color.GREEN);
+            }
+        }
+        int nVisit = mRifugiViewModel.getNumberOfVisitByHut(getSmallDistanceHut().getValue().getCodiceRifugio(), codicePersona);
 
         if (nVisit != 0) {
 
-            binding.numeroVisite.setText("Già visitato "+nVisit+" "+(nVisit==1?"volta":"volte"));
+            binding.numeroVisite.setText("Già visitato " + nVisit + " " + (nVisit == 1 ? "volta" : "volte"));
         } else {
             binding.numeroVisite.setText("non ancora visitato");
-        }
-
-        if (getSmallDistanceHut().getKey() > 100) {
-            binding.button.setEnabled(false);
-            binding.distanza.setTextColor(Color.RED);
-        } else {
-            binding.button.setEnabled(true);
-            binding.distanza.setTextColor(Color.GREEN);
         }
 
     }
@@ -217,18 +223,19 @@ public class VisitRifugio extends Fragment {
                 });
     }
 
-    private String formatDistance(Double distance){
-        if(Math.floor(distance)>=1000){
+    private String formatDistance(Double distance) {
+        if (Math.floor(distance) >= 1000) {
             DecimalFormat dfi = new DecimalFormat("#.00");
-            return dfi.format(distance/1000).toString()+" km";
-        }else{
-            return Math.floor(distance)+" m";
+            return dfi.format(distance / 1000) + " km";
+        } else {
+            return Math.floor(distance) + " m";
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.i("STATUS", "RESUME");
         mHandler.post(checkDistanceThread);
     }
 

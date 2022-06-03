@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.103" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/food_ratingbar_full_empty.xml" value="0.1" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/food_ratingbar_full_filled.xml" value="0.1" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/hike_rating_bar_full.xml" value="0.1" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.266" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.266" />
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3335" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.266" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/mountain_ratingbar_full_empty.xml" value="0.305" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/drawable/mountain_ratingbar_full_filled.xml" value="0.101" />
@@ -17,6 +19,7 @@
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/activity_my_book.xml" value="0.47056159420289856" />
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/activity_shared_book.xml" value="0.2994791666666667" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/book_item.xml" value="0.3015625" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_book.xml" value="0.25" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_book_page.xml" value="0.33" />
@@ -24,11 +27,15 @@
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_home.xml" value="0.22" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_hut_detail.xml" value="0.2441123188405797" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_insert_visit_popup.xml" value="0.47715736040609136" />
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_listof_all_account.xml" value="0.1" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_listofallhuts.xml" value="0.3015625" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_map.xml" value="0.14842958459979735" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_notifications.xml" value="0.3015625" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_second.xml" value="0.3265625" />
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_sharing.xml" value="0.29322916666666665" />
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_sharing_popup.xml" value="0.5" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/fragment_visit_rifugio.xml" value="0.28651685393258425" />
+        <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/personview_item.xml" value="0.33469202898550726" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/recyclerview_item.xml" value="0.2609375" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/table_rows.xml" value="0.3015625" />
         <entry key="..\:/Users/Billo/LibroTimbriRifugiDolomiti/app/src/main/res/layout/visitHut_item.xml" value="0.2441123188405797" />

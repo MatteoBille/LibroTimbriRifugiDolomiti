@@ -103,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 BitmapDescriptor bd;
 
                 sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-                int codicePersona=sharedPreferences.getInt("codicePersona",-1);
+                String codicePersona = sharedPreferences.getString("codicePersona", null);
 
                 int numberOfVisit = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut.getCodiceRifugio());
                 if (numberOfVisit > 0) {

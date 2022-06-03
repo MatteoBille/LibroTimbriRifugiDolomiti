@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.ui.hutdetail;
+package com.example.librotimbririfugidolomiti.ui.sharedbook;
 
 import android.os.Bundle;
 
@@ -7,28 +7,26 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.databinding.ActivityHutDetailBinding;
+import com.example.librotimbririfugidolomiti.databinding.ActivitySharedBookBinding;
+import com.example.librotimbririfugidolomiti.ui.home.HomeFragment;
 
-public class HutDetailActivity extends AppCompatActivity {
-    private ActivityHutDetailBinding binding;
+public class SharedBookActivity extends AppCompatActivity {
+
+    ActivitySharedBookBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityHutDetailBinding.inflate(getLayoutInflater());
+        binding = ActivitySharedBookBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getSupportActionBar().hide();
         Bundle extras = getIntent().getExtras();
-
-        int codiceRifugio = extras.getInt("codiceRifugio");
         String codicePersona = extras.getString("codicePersona");
-        HutDetailFragment hdf;
-
-        boolean obtained = extras.getBoolean("obtained");
-        hdf = HutDetailFragment.newInstance(codiceRifugio, codicePersona, obtained);
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.hutDetail, hdf).commit();
+        HomeFragment home = HomeFragment.newInstance(codicePersona, true);
+        transaction.add(R.id.fragmentContainerView, home).commit();
     }
+
 }

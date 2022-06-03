@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,8 +20,12 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.librotimbririfugidolomiti.FileHelper;
 import com.example.librotimbririfugidolomiti.R;
+import com.example.librotimbririfugidolomiti.SqlDatabaseFirebaseSyncronization;
+import com.example.librotimbririfugidolomiti.database.DatabaseUtility;
+import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.databinding.ActivityMainBinding;
 import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,16 +40,43 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.INTERNET
             };
     private SharedPreferences.Editor myEdit;
+    RifugiViewModel rifugiViewModel;
+    SqlDatabaseFirebaseSyncronization databaseSync;
+    private final Handler mHandler = new Handler();
+
+    private final Runnable syncDb = new Runnable() {
+        @Override
+        public void run() {
+            databaseSync.synchronizeCloudDb();
+            int time = 1000 * 60 * 2;
+            mHandler.postDelayed(this, time);
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHandler.post(syncDb);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(syncDb);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
-
+        FirebaseFirestore fb = FirebaseFirestore.getInstance();
+        rifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
+        databaseSync = new SqlDatabaseFirebaseSyncronization(fb, rifugiViewModel);
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
 
         boolean firstTime = sharedPreferences.getBoolean("firstTime", true);
+        Log.i("FIREBASE", firstTime + "");
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         if (firstTime) {
@@ -51,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             normalFlow();
         }
+
+        DatabaseUtility.printAllPerson(rifugiViewModel);
     }
 
     private void normalFlow() {

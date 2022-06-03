@@ -7,9 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
-import com.example.librotimbririfugidolomiti.database.Rifugio;
 import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
-import com.example.librotimbririfugidolomiti.ui.listofhut.RifugiViewHolder;
+
 
 public class HutVisitRecyclerCustomAdapter extends ListAdapter<VisitaRifugio, HutVisitHolder> {
 

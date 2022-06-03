@@ -8,10 +8,6 @@ import androidx.room.Relation;
 public class PersonaVisitaRifugio {
 
     @Embedded
-    Rifugio rifugio;
-
-    @Embedded
-    @Relation(parentColumn = "CodicePersona", entityColumn = "CodicePersona")
     Persona Persona;
 
     @Embedded

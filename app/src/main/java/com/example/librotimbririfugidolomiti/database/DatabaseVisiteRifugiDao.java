@@ -10,11 +10,13 @@ import java.util.List;
 @Dao
 public interface DatabaseVisiteRifugiDao {
 
-    @Query("SELECT COUNT(DISTINCT CodiceRifugio ) FROM VisiteRifugi  WHERE CodicePersona=:codicePersona")
-    Integer getNumberOfHutVisited(Integer codicePersona);
 
-    @Query("SELECT MAX(DataVisita) FROM VisiteRifugi WHERE CodicePersona=1")
-    String getLastVisitDay();
+    @Query("SELECT COUNT(DISTINCT CodiceRifugio ) FROM VisiteRifugi  WHERE CodicePersona=:codicePersona")
+    Integer getNumberOfHutVisited(String codicePersona);
+
+    @Query("SELECT MAX(DataVisita) FROM VisiteRifugi WHERE CodicePersona=:codicePersona")
+    String getLastVisitDay(String codicePersona);
+
 
     @Query("SELECT COUNT(CodiceRifugio) as hutNumber,GruppoDolomitico FROM Rifugi GROUP BY GruppoDolomitico ORDER BY CodiceRifugio")
     List<HutGroup> getNumberOfHutforEachDolomitcGroup();
@@ -23,22 +25,31 @@ public interface DatabaseVisiteRifugiDao {
     List<Rifugio> getListOfHutByDolomiticGroup(String groupName);
 
     @Query("SELECT COUNT(*) FROM VisiteRifugi WHERE CodiceRifugio=:codiceRifugio AND CodicePersona=:codicePersona")
-    Integer getNumberOfVisitByHut(Integer codiceRifugio,Integer codicePersona);
+    Integer getNumberOfVisitByHut(Integer codiceRifugio, String codicePersona);
+
+    @Query("SELECT * FROM VisiteRifugi WHERE CodiceRifugio=:codiceRifugio AND CodicePersona=:codicePersona AND DataVisita=:dataVisita")
+    VisitaRifugio getVisitsByHutPersonAndDate(Integer codiceRifugio, String codicePersona, String dataVisita);
 
     @Query("SELECT * FROM VisiteRifugi WHERE CodiceRifugio=:codiceRifugio AND CodicePersona=:codicePersona")
-    List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio,Integer codicePersona);
+    List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona);
+
+    @Query("SELECT * FROM VisiteRifugi WHERE CodicePersona=:codicePersona")
+    List<VisitaRifugio> getVisitsByPerson(String codicePersona);
 
     @Query("INSERT INTO VisiteRifugi(CodicePersona,CodiceRifugio,DataVisita) VALUES(:codicePersona,:codiceRifugio,:dataVisita)")
-    void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita);
+    void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita);
+
     @Query("INSERT INTO VisiteRifugi(CodicePersona,CodiceRifugio,DataVisita,Info) VALUES(:codicePersona,:codiceRifugio,:dataVisita,:info)")
-    void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info);
+    void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info);
+
     @Query("INSERT INTO VisiteRifugi(CodicePersona,CodiceRifugio,DataVisita,Rating) VALUES(:codicePersona,:codiceRifugio,:dataVisita,:rating)")
-    void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,Integer rating);
+    void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, Integer rating);
+
     @Query("INSERT INTO VisiteRifugi(CodicePersona,CodiceRifugio,DataVisita,Info,Rating) VALUES(:codicePersona,:codiceRifugio,:dataVisita,:info,:rating)")
-    void visitHut(Integer codicePersona,Integer codiceRifugio,String dataVisita,String info,Integer rating);
+    void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info, Integer rating);
 
     @Query("SELECT COUNT(VisiteRifugi.CodiceRifugio) FROM VisiteRifugi WHERE CodicePersona=:codicePersona AND CodiceRifugio=:codiceRifugio")
-    Integer isVisited(int codicePersona, Integer codiceRifugio);
+    Integer isVisited(String codicePersona, Integer codiceRifugio);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Long insert(VisitaRifugio visitaRifugio);

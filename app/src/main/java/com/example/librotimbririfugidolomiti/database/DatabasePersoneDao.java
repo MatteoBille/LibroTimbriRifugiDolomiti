@@ -5,17 +5,27 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface DatabasePersoneDao {
-
-    @Query("SELECT * FROM Persone WHERE CodicePersona=:codicePersona")
-    Persona getPersonById(Integer codicePersona);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Long insert(Persona persona);
 
+    @Query("SELECT * FROM Persone WHERE CodicePersona=:codicePersona AND Local=:local")
+    Persona getPersonById(String codicePersona, String local);
 
+    @Query("SELECT * FROM Persone WHERE CodicePersona=:codicePersona")
+    Persona getPersonById(String codicePersona);
 
-    @Query("SELECT COUNT(*) FROM Persone")
-    Integer getNumberOfUsers();
+    @Query("SELECT COUNT(*) FROM Persone WHERE Local=:local")
+    Integer getNumberOfUsers(String local);
+
+    @Query("SELECT * FROM Persone WHERE Local=:local")
+    List<Persona> getAllPeople(String local);
+
+    @Query("SELECT CodicePersona FROM Persone WHERE Local=:local")
+    List<String> getAllPeopleIDs(String local);
 }
+
