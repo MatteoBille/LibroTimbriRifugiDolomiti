@@ -1,5 +1,6 @@
 package com.example.librotimbririfugidolomiti.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -50,6 +51,10 @@ public interface DatabaseVisiteRifugiDao {
 
     @Query("SELECT COUNT(VisiteRifugi.CodiceRifugio) FROM VisiteRifugi WHERE CodicePersona=:codicePersona AND CodiceRifugio=:codiceRifugio")
     Integer isVisited(String codicePersona, Integer codiceRifugio);
+
+
+    @Query("SELECT Rifugi.*,Visite FROM Rifugi LEFT OUTER JOIN (SELECT CodiceRifugio,COUNT(CodiceRifugio) As Visite FROM VisiteRifugi WHERE VisiteRifugi.CodicePersona=:codicePersona GROUP BY (CodiceRifugio))AS Counter ON Rifugi.CodiceRifugio= Counter.CodiceRifugio")
+    LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Long insert(VisitaRifugio visitaRifugio);

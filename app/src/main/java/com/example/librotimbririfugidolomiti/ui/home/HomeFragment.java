@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,19 +27,14 @@ import com.example.librotimbririfugidolomiti.databinding.FragmentHomeBinding;
 import com.example.librotimbririfugidolomiti.ui.book.MyBookActivity;
 import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
 
-import java.util.List;
-
 public class HomeFragment extends Fragment {
     private RifugiViewModel mRifugiViewModel;
     private FragmentHomeBinding binding;
-    SharedPreferences sharedPreferences;
-    String codicePersona;
+    private SharedPreferences sharedPreferences;
+    private String codicePersona;
     boolean obtained;
-
-    public static HomeFragment newInstance() {
-        HomeFragment myFragment = new HomeFragment();
-        return myFragment;
-    }
+    private final Handler mHandler = new Handler();
+    private final Runnable setArgumentsAsync = () -> setFragmentArguments();
 
     public static HomeFragment newInstance(String codicePersona, boolean obtained) {
         HomeFragment myFragment = new HomeFragment();
@@ -55,8 +51,10 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
         sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+
         if (getArguments() == null) {
             codicePersona = sharedPreferences.getString("codicePersona", null);
             obtained = false;
@@ -68,7 +66,8 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        setFragmentArguments();
+
+        mHandler.post(setArgumentsAsync);
 
         binding.goToBook.setOnClickListener(e -> {
             Intent intent = new Intent(root.getContext(), MyBookActivity.class);
@@ -90,12 +89,12 @@ public class HomeFragment extends Fragment {
 
         Integer numberOfHut = mRifugiViewModel.getNumberOfHut();
         Integer numberOfHutVisited = mRifugiViewModel.getNumberOfHutVisited(codicePersona);
+        String date = mRifugiViewModel.getLastVisitDay(codicePersona);
 
 
         String visitedHuts = String.format(getResources().getString(R.string.visitedHuts), numberOfHutVisited, numberOfHut);
         binding.visitedHuts.setText(visitedHuts);
 
-        String date = mRifugiViewModel.getLastVisitDay(codicePersona);
         String dateLastVisit = String.format(getResources().getString(R.string.lastVisit), date);
         binding.lastVisit.setText(dateLastVisit);
     }
@@ -110,31 +109,31 @@ public class HomeFragment extends Fragment {
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setOutsideTouchable(true);
 
-        List<Persona> persons = mRifugiViewModel.getAllLocalPeople();
-        switch (persons.size()) {
-            case 3:
-                setTextAndListener(popupView, persons.get(2), R.id.id3, popupWindow);
-                setTextAndListener(popupView, persons.get(1), R.id.id2, popupWindow);
-                setTextAndListener(popupView, persons.get(0), R.id.id1, popupWindow);
-                break;
-            case 2:
-                popupView.findViewById(R.id.id3).setVisibility(GONE);
-                setTextAndListener(popupView, persons.get(1), R.id.id2, popupWindow);
-                setTextAndListener(popupView, persons.get(0), R.id.id1, popupWindow);
-                popupView.findViewById(R.id.addUser).setVisibility(View.VISIBLE);
-                break;
-            case 1:
-                popupView.findViewById(R.id.id3).setVisibility(GONE);
-                popupView.findViewById(R.id.id2).setVisibility(GONE);
-                setTextAndListener(popupView, persons.get(0), R.id.id1, popupWindow);
-                popupView.findViewById(R.id.addUser).setVisibility(View.VISIBLE);
-                break;
-        }
-
-        popupView.findViewById(R.id.addUser).setOnClickListener(e ->
-        {
-            addNewUser();
-            popupWindow.dismiss();
+        mRifugiViewModel.getAllLocalPeople().observe(getViewLifecycleOwner(), persons -> {
+            switch (persons.size()) {
+                case 3:
+                    setTextAndListener(popupView, persons.get(2), R.id.id3, popupWindow);
+                    setTextAndListener(popupView, persons.get(1), R.id.id2, popupWindow);
+                    setTextAndListener(popupView, persons.get(0), R.id.id1, popupWindow);
+                    break;
+                case 2:
+                    popupView.findViewById(R.id.id3).setVisibility(GONE);
+                    setTextAndListener(popupView, persons.get(1), R.id.id2, popupWindow);
+                    setTextAndListener(popupView, persons.get(0), R.id.id1, popupWindow);
+                    popupView.findViewById(R.id.addUser).setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    popupView.findViewById(R.id.id3).setVisibility(GONE);
+                    popupView.findViewById(R.id.id2).setVisibility(GONE);
+                    setTextAndListener(popupView, persons.get(0), R.id.id1, popupWindow);
+                    popupView.findViewById(R.id.addUser).setVisibility(View.VISIBLE);
+                    break;
+            }
+            popupView.findViewById(R.id.addUser).setOnClickListener(e ->
+            {
+                addNewUser();
+                popupWindow.dismiss();
+            });
         });
 
     }
@@ -145,7 +144,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setTextAndListener(View popupView, Persona person, int p, PopupWindow popupWindow) {
-        Button but = (Button) popupView.findViewById(p);
+        Button but = popupView.findViewById(p);
         but.setText(person.getNomeCognome());
         but.setOnClickListener(e -> {
             changeUser(person);
@@ -159,7 +158,7 @@ public class HomeFragment extends Fragment {
         myEdit.putString("codicePersona", person.getCodicePersona());
         myEdit.commit();
         codicePersona = sharedPreferences.getString("codicePersona", null);
-        this.setFragmentArguments();
+        mHandler.post(setArgumentsAsync);
     }
 
     @Override

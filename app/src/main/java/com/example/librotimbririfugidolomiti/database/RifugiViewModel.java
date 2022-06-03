@@ -122,11 +122,11 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.isVisited(codicePersona, codiceRifugio);
     }
 
-    public List<Persona> getAllLocalPeople() {
+    public LiveData<List<Persona>> getAllLocalPeople() {
         return mRepository.getAllPeople("true");
     }
 
-    public List<Persona> getAllNonLocalPeople() {
+    public LiveData<List<Persona>> getAllNonLocalPeople() {
         return mRepository.getAllPeople("false");
     }
 
@@ -140,6 +140,10 @@ public class RifugiViewModel extends AndroidViewModel {
 
     public VisitaRifugio getVisitsByHutPersonAndDate(Integer codiceRifugio, String codicePersona, String dataVisita) {
         return mRepository.getVisitsByHutPersonAndDate(codiceRifugio, codicePersona, dataVisita);
+    }
+
+    public LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona) {
+        return mRepository.getAllTheHutWithNumberOfVisitByUserId(codicePersona);
     }
 }
 

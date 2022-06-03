@@ -19,8 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
+import com.example.librotimbririfugidolomiti.database.HutsWithNumberOfVisit;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
-import com.example.librotimbririfugidolomiti.database.Rifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentMapBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,7 +43,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FragmentMapBinding binding;
     private GoogleMap mMap;
     private RifugiViewModel mRifugiViewModel;
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,33 +58,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return root;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("Range")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             getContext(), R.raw.style_json));
-
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
+        sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        String codicePersona = sharedPreferences.getString("codicePersona", null);
 
 
-        mRifugiViewModel.getAllRifugi().observe(getViewLifecycleOwner(), huts -> {
+        mRifugiViewModel.getAllTheHutWithNumberOfVisitByUserId(codicePersona).observe(getViewLifecycleOwner(), huts -> {
             DecimalFormat df = new DecimalFormat();
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setDecimalSeparator(',');
@@ -93,25 +86,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             Map<String, LatLng> rifugiLatLong = new HashMap();
 
-            for (Rifugio hut : huts) {
-                Log.i("LTE", hut.getNomeImmagine());
-                Log.i("LTE", hut.getLatitudine() + "");
-                double latitudine = hut.getLatitudine();
-                double longitudine = hut.getLongitudine();
+            for (HutsWithNumberOfVisit hut : huts) {
+                double latitudine = hut.getRifugio().getLatitudine();
+                double longitudine = hut.getRifugio().getLongitudine();
                 LatLng tempLatLng = new LatLng(latitudine, longitudine);
-                rifugiLatLong.put(hut.getNomeRifugio(), tempLatLng);
+                rifugiLatLong.put(hut.getRifugio().getNomeRifugio(), tempLatLng);
                 BitmapDescriptor bd;
 
-                sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-                String codicePersona = sharedPreferences.getString("codicePersona", null);
-
-                int numberOfVisit = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut.getCodiceRifugio());
-                if (numberOfVisit > 0) {
+                if (hut.getCount() != null && hut.getCount() > 0) {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
                 } else {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
                 }
-                mMap.addMarker(new MarkerOptions().position(tempLatLng).icon(bd).title(hut.getNomeRifugio()));
+                mMap.addMarker(new MarkerOptions().position(tempLatLng).icon(bd).title(hut.getRifugio().getNomeRifugio()));
             }
 
             LatLngBounds.Builder bc = new LatLngBounds.Builder();

@@ -21,7 +21,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.librotimbririfugidolomiti.FileHelper;
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.SqlDatabaseFirebaseSyncronization;
-import com.example.librotimbririfugidolomiti.database.DatabaseUtility;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
 import com.example.librotimbririfugidolomiti.databinding.ActivityMainBinding;
 import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             normalFlow();
         }
-
-        DatabaseUtility.printAllPerson(rifugiViewModel);
     }
 
     private void normalFlow() {
@@ -123,14 +120,12 @@ public class MainActivity extends AppCompatActivity {
         String[] list;
         try {
             list = getAssets().list(path);
-            Log.i("RIFUGI", path + " " + list.length);
             if (list.length > 0) {
                 // This is a folder
                 for (String file : list) {
                     copyAssets(path + "/" + file);
                 }
             } else {
-                Log.i("RIFUGI", getBaseContext().getFilesDir() + "/" + path);
                 AssetFileDescriptor fileDescriptor = getAssets().openFd(path);
                 FileInputStream fileInputStream = fileDescriptor.createInputStream();
                 FileHelper.copyFile(fileInputStream, getBaseContext().getFilesDir() + "/" + path);

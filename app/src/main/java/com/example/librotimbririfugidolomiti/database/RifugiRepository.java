@@ -126,7 +126,7 @@ class RifugiRepository {
         return databaseVisiteRifugiDao.isVisited(codicePersona, codiceRifugio);
     }
 
-    public List<Persona> getAllPeople(String local) {
+    public LiveData<List<Persona>> getAllPeople(String local) {
         return databasePersoneDao.getAllPeople(local);
     }
 
@@ -140,5 +140,9 @@ class RifugiRepository {
 
     public VisitaRifugio getVisitsByHutPersonAndDate(Integer codiceRifugio, String codicePersona, String dataVisita) {
         return databaseVisiteRifugiDao.getVisitsByHutPersonAndDate(codiceRifugio, codicePersona, dataVisita);
+    }
+
+    public LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona) {
+        return databaseVisiteRifugiDao.getAllTheHutWithNumberOfVisitByUserId(codicePersona);
     }
 }
