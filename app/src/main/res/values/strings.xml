@@ -10,6 +10,8 @@
     <string name="visita">Visita</string>
     <string name="title_activity_login">LoginActivity</string>
 
+    <string name="visits">%1$d° visita</string>
+    <string name="numberOfVisits">{0,choice,0#Non ancora visitato|1#Già visitato {0} volta |1&lt;visitato {0} volte}</string>
 
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

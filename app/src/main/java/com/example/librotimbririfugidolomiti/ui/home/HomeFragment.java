@@ -31,10 +31,10 @@ public class HomeFragment extends Fragment {
     private RifugiViewModel mRifugiViewModel;
     private FragmentHomeBinding binding;
     private SharedPreferences sharedPreferences;
-    private String codicePersona;
+    private String personId;
     private boolean obtained;
     private final Handler mHandler = new Handler();
-    private final Runnable setArgumentsAsync = () -> setFragmentArguments();
+    private final Runnable setArgumentsAsync = this::setFragmentArguments;
 
     public static HomeFragment newInstance(String codicePersona, boolean obtained) {
         HomeFragment myFragment = new HomeFragment();
@@ -53,25 +53,22 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-        sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
         if (getArguments() == null) {
-            codicePersona = sharedPreferences.getString("codicePersona", null);
+            personId = sharedPreferences.getString("codicePersona", null);
             obtained = false;
         } else {
-            codicePersona = getArguments().getString("codicePersona");
+            personId = getArguments().getString("codicePersona");
             obtained = getArguments().getBoolean("obtained");
             if (obtained) {
                 binding.highBar.setVisibility(GONE);
             }
         }
 
-
-        mHandler.post(setArgumentsAsync);
-
         binding.goToBook.setOnClickListener(e -> {
             Intent intent = new Intent(root.getContext(), MyBookActivity.class);
-            intent.putExtra("codicePersona", codicePersona);
+            intent.putExtra("codicePersona", personId);
             intent.putExtra("obtained", obtained);
             startActivity(intent);
         });
@@ -79,17 +76,19 @@ public class HomeFragment extends Fragment {
         binding.account.setOnClickListener(e -> {
             openUsersPopup();
         });
+
+        mHandler.post(setArgumentsAsync);
         return root;
     }
 
     private void setFragmentArguments() {
 
-        Persona person = mRifugiViewModel.getPersonById(codicePersona);
+        Persona person = mRifugiViewModel.getPersonById(personId);
         binding.name.setText(person.getNomeCognome());
 
         Integer numberOfHut = mRifugiViewModel.getNumberOfHut();
-        Integer numberOfHutVisited = mRifugiViewModel.getNumberOfHutVisited(codicePersona);
-        String date = mRifugiViewModel.getLastVisitDay(codicePersona);
+        Integer numberOfHutVisited = mRifugiViewModel.getNumberOfHutVisited(personId);
+        String date = mRifugiViewModel.getLastVisitDay(personId);
 
 
         String visitedHuts = String.format(getResources().getString(R.string.visitedHuts), numberOfHutVisited, numberOfHut);
@@ -138,11 +137,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void addNewUser() {
-        Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivity(intent);
-    }
-
     private void setTextAndListener(View popupView, Persona person, int p, PopupWindow popupWindow) {
         Button but = popupView.findViewById(p);
         but.setText(person.getNomeCognome());
@@ -153,11 +147,15 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private void addNewUser() {
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+    }
+
     private void changeUser(Persona person) {
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putString("codicePersona", person.getCodicePersona());
-        myEdit.commit();
-        codicePersona = sharedPreferences.getString("codicePersona", null);
+        myEdit.putString("codicePersona", person.getCodicePersona()).apply();
+        personId = sharedPreferences.getString("codicePersona", null);
         mHandler.post(setArgumentsAsync);
     }
 

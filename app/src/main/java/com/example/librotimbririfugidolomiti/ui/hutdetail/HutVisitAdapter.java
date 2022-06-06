@@ -27,7 +27,6 @@ public class HutVisitAdapter extends RecyclerView.Adapter<HutVisitHolder> {
     public void onBindViewHolder(HutVisitHolder holder, int position) {
         Log.i("POSITION", huts.get(position).toString());
         holder.setUpHolder(huts.get(position), position);
-        VisitaRifugio current = huts.get(position);
     }
 
     @Override

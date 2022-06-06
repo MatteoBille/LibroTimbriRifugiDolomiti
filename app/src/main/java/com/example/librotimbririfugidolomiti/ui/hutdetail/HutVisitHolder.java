@@ -24,6 +24,7 @@ public class HutVisitHolder extends RecyclerView.ViewHolder {
     private final ImageView showMore;
     private final RatingBar rating;
     private boolean open;
+    private final Context context;
 
     //TODO: aggiungere i bordi
     //TODO: aggiungere i valori ai campi di testo
@@ -36,6 +37,7 @@ public class HutVisitHolder extends RecyclerView.ViewHolder {
         info = itemView.findViewById(R.id.info);
         showMore = itemView.findViewById(R.id.showMore);
         rating = itemView.findViewById(R.id.ratingBar);
+        this.context = context;
         open = false;
 
         showMore.setOnClickListener(e ->
@@ -67,10 +69,8 @@ public class HutVisitHolder extends RecyclerView.ViewHolder {
     }
 
     public void setUpHolder(VisitaRifugio visitaRifugio,int position) {
-        //TODO:@String with annotation
-        //TODO:Ratink non cancellabile
-        //TODO:Stile delle scritte
-        numeroVisita.setText((position+1)+"° visita");
+        String visits = String.format(context.getResources().getString(R.string.visits), position + 1);
+        numeroVisita.setText(visits);
         dataVisita.setText(visitaRifugio.getDataVisita());
         info.setText(visitaRifugio.getInfo());
         rating.setRating(visitaRifugio.getRating());

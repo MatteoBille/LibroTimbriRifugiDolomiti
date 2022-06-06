@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,12 +31,10 @@ import com.example.librotimbririfugidolomiti.databinding.FragmentVisitRifugioBin
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -51,31 +49,27 @@ public class VisitRifugio extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     FragmentVisitRifugioBinding binding;
     private RifugiViewModel mRifugiViewModel;
-    Map<LatLng, Rifugio> rifugesLocation;
-    Map<Double, Rifugio> synchronizedDistanzaRifugio = Collections.synchronizedSortedMap(new TreeMap<>());
+    HashMap<LatLng, Integer> rifugesLocation;
+    SortedMap<Double, Integer> synchronizedDistanzaRifugio = Collections.synchronizedSortedMap(new TreeMap<>());
     boolean viewOpen;
     SharedPreferences sharedPreferences;
-    FirebaseFirestore firebaseDatabase;
 
     private final Handler mHandler = new Handler();
     private final Runnable checkDistanceThread = new Runnable() {
         @Override
         public void run() {
             getLocation();
-            Log.i("Thread", "THREAD");
             mHandler.postDelayed(this, 2000);
         }
     };
 
     public VisitRifugio() {
-        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i("STATUS", "CREATEVIEW");
-        sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
         binding = FragmentVisitRifugioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -89,10 +83,10 @@ public class VisitRifugio extends Fragment {
         mRifugiViewModel.getAllRifugi().observe(getViewLifecycleOwner(), Huts -> {
             for (Rifugio hut : Huts) {
                 LatLng tempCord = new LatLng(hut.getLatitudine(), hut.getLongitudine());
-                rifugesLocation.put(tempCord, hut);
+                rifugesLocation.put(tempCord, hut.getCodiceRifugio());
             }
             viewOpen = true;
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
 
         });
         return root;
@@ -100,35 +94,25 @@ public class VisitRifugio extends Fragment {
 
 
     private void openVisitPopup() {
-        Map.Entry<Double, Rifugio> hut = getSmallDistanceHut();
-        View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_insert_visit_popup, null);
-        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+        Double key = synchronizedDistanzaRifugio.firstKey();
+        mRifugiViewModel.getHutById(synchronizedDistanzaRifugio.get(key)).observe(getViewLifecycleOwner(), hut -> {
+            View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_insert_visit_popup, null);
+            int width = LinearLayout.LayoutParams.MATCH_PARENT;
+            int height = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
-        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+            popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
-
-        ((TextView) popupView.findViewById(R.id.hutName)).setText(hut.getValue().getNomeRifugio());
-        popupView.findViewById(R.id.visitButton).setOnClickListener(e -> {
-            saveVisitInDb(hut, popupView, popupWindow);
+            ((TextView) popupView.findViewById(R.id.hutName)).setText(hut.getNomeRifugio());
+            popupView.findViewById(R.id.visitButton).setOnClickListener(e -> {
+                saveVisitInDb(hut, popupView, popupWindow);
+            });
         });
-
-        RatingBar ratingBar = popupView.findViewById(R.id.ratingBar);
-        ratingBar.setRating(4.8f);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Log.i("POPUP", "onRatingChanged: rating : " + rating);
-            }
-        });
-
-
     }
 
-    private void saveVisitInDb(Map.Entry<Double, Rifugio> hut, View popupView, PopupWindow popupWindow) {
-        int idRifugio = hut.getValue().getCodiceRifugio();
-        Log.i("ID", idRifugio + "");
+
+    private void saveVisitInDb(Rifugio hut, View popupView, PopupWindow popupWindow) {
+        int idRifugio = hut.getCodiceRifugio();
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dataVisita = sdf.format(currentTime);
@@ -144,51 +128,41 @@ public class VisitRifugio extends Fragment {
 
     private void measureDistance(Location location) {
         binding.distanza.setText(location.getLatitude() + "-" + location.getLongitude());
-        for (Map.Entry<LatLng, Rifugio> entry : rifugesLocation.entrySet()) {
+        for (Map.Entry<LatLng, Integer> entry : rifugesLocation.entrySet()) {
             Double distance = getDistanceInMeter(entry.getKey(), location);
             synchronizedDistanzaRifugio.put(distance, entry.getValue());
         }
-        String formattedDistance = formatDistance(getSmallDistanceHut().getKey());
-        binding.distanza.setText(formattedDistance);
-        binding.nomeRifugio.setText(getSmallDistanceHut().getValue().getNomeRifugio());
+        Integer nearestHutId = synchronizedDistanzaRifugio.get(synchronizedDistanzaRifugio.firstKey());
+        mRifugiViewModel.getHutById(nearestHutId).observe(getViewLifecycleOwner(), nearestHut -> {
+            String formattedDistance = formatDistance(synchronizedDistanzaRifugio.firstKey());
+            binding.distanza.setText(formattedDistance);
+            binding.nomeRifugio.setText(nearestHut.getNomeRifugio());
 
-        String codicePersona = sharedPreferences.getString("codicePersona", null);
+            String codicePersona = sharedPreferences.getString("codicePersona", null);
 
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dataVisita = sdf.format(currentTime);
-        VisitaRifugio visitaRifugio = mRifugiViewModel.getVisitsByHutPersonAndDate(getSmallDistanceHut().getValue().getCodiceRifugio(), codicePersona, dataVisita);
-        Log.i("VISITA", visitaRifugio + "");
-        if (visitaRifugio != null) {
-            binding.button.setEnabled(false);
-        } else {
-            binding.button.setEnabled(true);
-
-
-            if (getSmallDistanceHut().getKey() > 100) {
+            Date currentTime = Calendar.getInstance().getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dataVisita = sdf.format(currentTime);
+            VisitaRifugio visitaRifugio = mRifugiViewModel.getVisitsByHutPersonAndDate(nearestHut.getCodiceRifugio(), codicePersona, dataVisita);
+            if (visitaRifugio != null) {
                 binding.button.setEnabled(false);
-                binding.distanza.setTextColor(Color.RED);
             } else {
                 binding.button.setEnabled(true);
-                binding.distanza.setTextColor(Color.GREEN);
+
+
+                if (synchronizedDistanzaRifugio.firstKey() > 100) {
+                    binding.button.setEnabled(false);
+                    binding.distanza.setTextColor(Color.RED);
+                } else {
+                    binding.button.setEnabled(true);
+                    binding.distanza.setTextColor(Color.GREEN);
+                }
             }
-        }
-        int nVisit = mRifugiViewModel.getNumberOfVisitByHut(getSmallDistanceHut().getValue().getCodiceRifugio(), codicePersona);
+            int nVisit = mRifugiViewModel.getNumberOfVisitByHut(nearestHut.getCodiceRifugio(), codicePersona);
 
-        if (nVisit != 0) {
-
-            binding.numeroVisite.setText("Già visitato " + nVisit + " " + (nVisit == 1 ? "volta" : "volte"));
-        } else {
-            binding.numeroVisite.setText("non ancora visitato");
-        }
-
-    }
-
-    private Map.Entry<Double, Rifugio> getSmallDistanceHut() {
-        Log.i("TYPE", synchronizedDistanzaRifugio.getClass() + "");
-        Double key = ((SortedMap<Double, Rifugio>) synchronizedDistanzaRifugio).firstKey();
-        Rifugio hut = synchronizedDistanzaRifugio.get(key);
-        return new AbstractMap.SimpleEntry<>(key, hut);
+            String numberOfVisitsStringDescriptor = getResources().getText(R.string.numberOfVisits).toString();
+            binding.numeroVisite.setText(MessageFormat.format(numberOfVisitsStringDescriptor, nVisit));
+        });
     }
 
     public static double getDistanceInMeter(LatLng source, Location destination) {
@@ -211,19 +185,13 @@ public class VisitRifugio extends Fragment {
 
 
     public void getLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.i("PERMESSI", "NOT GRANTED");
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        Log.i("LOCATION", location + "");
-                        if (location != null) {
-                            measureDistance(location);
-                        }
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        measureDistance(location);
                     }
                 });
     }
@@ -240,20 +208,17 @@ public class VisitRifugio extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("STATUS", "RESUME");
         mHandler.post(checkDistanceThread);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.i("STATUS", "PAUSE");
         mHandler.removeCallbacks(checkDistanceThread);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i("STATUS", "STOP");
     }
 }
