@@ -33,8 +33,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,14 +74,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         String codicePersona = sharedPreferences.getString("codicePersona", null);
 
-
         mRifugiViewModel.getAllTheHutWithNumberOfVisitByUserId(codicePersona).observe(getViewLifecycleOwner(), huts -> {
-            DecimalFormat df = new DecimalFormat();
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setDecimalSeparator(',');
-            symbols.setGroupingSeparator(' ');
-            df.setDecimalFormatSymbols(symbols);
-
             Map<String, LatLng> rifugiLatLong = new HashMap();
 
             for (HutsWithNumberOfVisit hut : huts) {
@@ -92,8 +83,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng tempLatLng = new LatLng(latitudine, longitudine);
                 rifugiLatLong.put(hut.getRifugio().getNomeRifugio(), tempLatLng);
                 BitmapDescriptor bd;
-
-                if (hut.getCount() != null && hut.getCount() > 0) {
+                if (hut.getVisite() != null && hut.getVisite() > 0) {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
                 } else {
                     bd = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);

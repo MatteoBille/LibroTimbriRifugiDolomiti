@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
-import com.example.librotimbririfugidolomiti.database.Rifugio;
-import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentHutDetailBinding;
-
-import java.util.List;
 
 public class HutDetailFragment extends Fragment {
     private FragmentHutDetailBinding binding;
@@ -32,7 +29,7 @@ public class HutDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    HutVisitRecyclerCustomAdapter adapter;
+    HutVisitAdapter adapter;
     int codiceRifugio;
     String codicePersona;
 
@@ -57,27 +54,27 @@ public class HutDetailFragment extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         codicePersona = getArguments().getString("codicePersona");
         codiceRifugio = getArguments().getInt(CODICE_RIF);
-        Rifugio hut = mRifugiViewModel.getHutById(codiceRifugio);
-        Bitmap bit1 = BitmapFactory.decodeFile(getContext().getFilesDir() + "/images/" + hut.getNomeImmagine());
-        binding.hutImage.setImageBitmap(bit1);
-        binding.nomeRifugio.setText(hut.getNomeRifugio());
-
-        createRecyclerView();
+        mRifugiViewModel.getHutById(codiceRifugio).observe(getViewLifecycleOwner(), hut -> {
+            Bitmap bit1 = BitmapFactory.decodeFile(getContext().getFilesDir() + "/images/" + hut.getNomeImmagine());
+            binding.hutImage.setImageBitmap(bit1);
+            binding.nomeRifugio.setText(hut.getNomeRifugio());
+            createRecyclerView();
+        });
         return root;
     }
 
 
     private void createRecyclerView() {
-        List<VisitaRifugio> visits = mRifugiViewModel.getVisitsByHutAndPerson(codiceRifugio, codicePersona);
-        if (visits.size() != 0) {
-            RecyclerView recyclerView = binding.recyclerview;
-            adapter = new HutVisitRecyclerCustomAdapter(new HutVisitRecyclerCustomAdapter.VisitDiff());
+        mRifugiViewModel.getVisitsByHutAndPerson(codiceRifugio, codicePersona).observe(getViewLifecycleOwner(), (visits) -> {
+            Log.i("RECICLER VIEW", visits.toString());
+            if (visits.size() != 0) {
+                RecyclerView recyclerView = binding.recyclerview;
+                adapter = new HutVisitAdapter(visits);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setAdapter(adapter);
 
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            adapter.submitList(visits);
-        }
+            }
+        });
     }
 
 

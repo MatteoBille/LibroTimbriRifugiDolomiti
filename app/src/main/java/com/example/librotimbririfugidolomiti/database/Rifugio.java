@@ -89,4 +89,16 @@ public class Rifugio {
     public String getNomeImmagine() {
         return NomeImmagine;
     }
+
+    @Override
+    public String toString() {
+        return "Rifugio{" +
+                "Latitudine=" + Latitudine +
+                ", Longitudine=" + Longitudine +
+                ", CodiceRifugio=" + CodiceRifugio +
+                ", NomeRifugio='" + NomeRifugio + '\'' +
+                ", GruppoDolomitico='" + GruppoDolomitico + '\'' +
+                ", NomeImmagine='" + NomeImmagine + '\'' +
+                '}';
+    }
 }

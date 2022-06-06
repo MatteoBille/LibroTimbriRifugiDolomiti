@@ -3,14 +3,11 @@ package com.example.librotimbririfugidolomiti.ui.hutdetail;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -21,28 +18,27 @@ import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
 
 
 public class HutVisitHolder extends RecyclerView.ViewHolder {
-    TextView numeroVisita;
-    TextView dataVisita;
-    TextView info;
-    ImageView showMore;
-    RatingBar rating;
-    boolean open;
+    private final TextView numeroVisita;
+    private final TextView dataVisita;
+    private final TextView info;
+    private final ImageView showMore;
+    private final RatingBar rating;
+    private boolean open;
 
-    //TODO: freccia giù bottone
     //TODO: aggiungere i bordi
     //TODO: aggiungere i valori ai campi di testo
 
     private HutVisitHolder(View itemView, Context context) {
         super(itemView);
-        Log.i("POSITION",getAdapterPosition()+"");
-        numeroVisita = (TextView) itemView.findViewById(R.id.numeroVisita);
-        dataVisita = (TextView) itemView.findViewById(R.id.dataVisita);
-        info = (TextView) itemView.findViewById(R.id.info);
-        showMore = (ImageView) itemView.findViewById(R.id.showMore);
-        rating = (RatingBar) itemView.findViewById(R.id.ratingBar);
-        open=false;
+        Log.i("POSITION", getAdapterPosition() + "");
+        numeroVisita = itemView.findViewById(R.id.numeroVisita);
+        dataVisita = itemView.findViewById(R.id.dataVisita);
+        info = itemView.findViewById(R.id.info);
+        showMore = itemView.findViewById(R.id.showMore);
+        rating = itemView.findViewById(R.id.ratingBar);
+        open = false;
 
-        showMore.setOnClickListener(e->
+        showMore.setOnClickListener(e ->
                 openAndcloseInfoPanel(context));
     }
 
@@ -51,13 +47,13 @@ public class HutVisitHolder extends RecyclerView.ViewHolder {
 
             Bitmap icon= BitmapFactory.decodeResource(context.getResources(),R.drawable.reduce_button);
             showMore.setImageBitmap(icon);
-            ((LinearLayout) itemView.findViewById(R.id.infos)).setVisibility(View.VISIBLE);
-            open=true;
+            itemView.findViewById(R.id.infos).setVisibility(View.VISIBLE);
+            open = true;
         }else{
             Bitmap icon= BitmapFactory.decodeResource(context.getResources(),R.drawable.expand_button);
             showMore.setImageBitmap(icon);
-            ((LinearLayout) itemView.findViewById(R.id.infos)).setVisibility(View.GONE);
-            open=false;
+            itemView.findViewById(R.id.infos).setVisibility(View.GONE);
+            open = false;
         }
     }
 

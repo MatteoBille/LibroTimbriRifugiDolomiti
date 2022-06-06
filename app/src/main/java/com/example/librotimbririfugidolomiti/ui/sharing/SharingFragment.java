@@ -21,10 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.SqlDatabaseFirebaseSyncronization;
 import com.example.librotimbririfugidolomiti.database.CondivisioneLibro;
 import com.example.librotimbririfugidolomiti.database.Persona;
 import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
+import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
 import com.example.librotimbririfugidolomiti.databinding.FragmentSharingBinding;
 import com.example.librotimbririfugidolomiti.ui.sharedbook.SharedBookActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,19 +48,11 @@ public class SharingFragment extends Fragment implements RecyclerPersonAdapter.O
     List<Persona> obtained = new ArrayList<>();
     private final Handler mHandler = new Handler();
 
-    private SqlDatabaseFirebaseSyncronization databaseSync;
-
     private final Runnable syncLocalDb = new Runnable() {
         @Override
         public void run() {
-            databaseSync.synchronizeLocalDb();
+            synchronizeLocalDb();
             int time = 1000 * 60 * 2;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            createRecyclerView();
             mHandler.postDelayed(this, time);
         }
     };
@@ -78,7 +70,6 @@ public class SharingFragment extends Fragment implements RecyclerPersonAdapter.O
         mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
         sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         firebaseDatabase = FirebaseFirestore.getInstance();
-        databaseSync = new SqlDatabaseFirebaseSyncronization(firebaseDatabase, mRifugiViewModel);
         adapter = new RecyclerPersonAdapter(new ArrayList<>(), this);
         String sharingId = String.format(getResources().getString(R.string.my_id), sharedPreferences.getString("codicePersona", null));
 
@@ -86,8 +77,6 @@ public class SharingFragment extends Fragment implements RecyclerPersonAdapter.O
         binding.share.setOnClickListener(e -> {
             openSharingPopup();
         });
-
-        createRecyclerView();
         return root;
     }
 
@@ -138,19 +127,19 @@ public class SharingFragment extends Fragment implements RecyclerPersonAdapter.O
     private void createRecyclerView() {
         obtained = new ArrayList<>();
         String codPersona = sharedPreferences.getString("codicePersona", null);
-        List<CondivisioneLibro> condivisioni = mRifugiViewModel.getObtainedBook(codPersona);
-        Log.i("CONDIVISIONE1", condivisioni + "");
-        for (CondivisioneLibro condivisione : condivisioni) {
-            Log.i("CONDIVISIONE2", condivisione.getCodicePersonaVisualizzante() + " " + condivisione.getCodicePersonaProprietaria());
-            obtained.add(mRifugiViewModel.getPersonById(condivisione.getCodicePersonaProprietaria()));
-        }
+        mRifugiViewModel.getObtainedBook(codPersona).observe(getViewLifecycleOwner(), condivisioni ->
 
-        RecyclerView recyclerView = binding.obtainedBook;
-        adapter.add(obtained);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new RecyclerPersonAdapter(obtained, this);
-        recyclerView.setAdapter(adapter);
+        {
+            for (CondivisioneLibro condivisione : condivisioni) {
+                obtained.add(mRifugiViewModel.getPersonById(condivisione.getCodicePersonaProprietaria()));
+            }
 
+            RecyclerView recyclerView = binding.obtainedBook;
+            adapter.add(obtained);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            //adapter = new RecyclerPersonAdapter(obtained, this);
+            recyclerView.setAdapter(adapter);
+        });
     }
 
     @Override
@@ -171,5 +160,53 @@ public class SharingFragment extends Fragment implements RecyclerPersonAdapter.O
     public void onPause() {
         super.onPause();
         mHandler.removeCallbacks(syncLocalDb);
+    }
+
+    public void synchronizeLocalDb() {
+        List<String> personIDs;
+        personIDs = mRifugiViewModel.getAllLocalPeopleIDs();
+        for (String id : personIDs) {
+            firebaseDatabase.collection("users").document(id)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                retrieveAllTheVisistsFromAUsesAndSaveOnLocalDb(id, document);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void retrieveAllTheVisistsFromAUsesAndSaveOnLocalDb(String id, DocumentSnapshot document) {
+        List<String> obtained = (List<String>) document.get("sharingOf");
+        if (obtained != null && obtained.size() != 0) {
+            for (String id2 : obtained)
+                firebaseDatabase.collection("users").document(id2)
+                        .get().addOnCompleteListener(t -> {
+                    if (t.isSuccessful()) {
+                        DocumentSnapshot document2 = t.getResult();
+                        if (document2.exists()) {
+                            String nomeCognome = document2.getString("NomeCognome");
+                            String email = document2.getString("Email");
+                            Persona persona = new Persona(id2, nomeCognome, email, "false");
+                            mRifugiViewModel.insert(persona);
+                            CondivisioneLibro condivisioneLibro = new CondivisioneLibro(id2, id);
+                            mRifugiViewModel.insert(condivisioneLibro);
+                            List<Map> hutVisits = (List<Map>) document2.get("Visits");
+                            for (int i = 0; i < hutVisits.size(); i++) {
+                                Integer codiceRifugio = ((Long) hutVisits.get(i).get("CodiceRifugio")).intValue();
+                                String dataVisita = (String) hutVisits.get(i).get("DataVisita");
+                                String info = (String) hutVisits.get(i).get("Info");
+                                Integer rating = ((Long) hutVisits.get(i).get("Rating")).intValue();
+                                VisitaRifugio visitaRifugio = new VisitaRifugio(codiceRifugio, id2, dataVisita, info, rating);
+                                mRifugiViewModel.insert(visitaRifugio);
+                            }
+                            createRecyclerView();
+                        }
+                    }
+                });
+        }
     }
 }

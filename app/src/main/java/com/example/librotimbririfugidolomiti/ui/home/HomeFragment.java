@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private SharedPreferences sharedPreferences;
     private String codicePersona;
-    boolean obtained;
+    private boolean obtained;
     private final Handler mHandler = new Handler();
     private final Runnable setArgumentsAsync = () -> setFragmentArguments();
 

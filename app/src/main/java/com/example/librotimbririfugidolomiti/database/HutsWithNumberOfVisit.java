@@ -1,5 +1,6 @@
 package com.example.librotimbririfugidolomiti.database;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 
 public class HutsWithNumberOfVisit {
@@ -7,13 +8,22 @@ public class HutsWithNumberOfVisit {
     @Embedded
     Rifugio rifugio;
 
-    Integer count;
+    @ColumnInfo(name = "Visite")
+    Integer Visite;
 
     public Rifugio getRifugio() {
         return rifugio;
     }
 
-    public Integer getCount() {
-        return count;
+    public Integer getVisite() {
+        return Visite;
+    }
+
+    @Override
+    public String toString() {
+        return "HutsWithNumberOfVisit{" +
+                "rifugio=" + rifugio +
+                ", count=" + Visite +
+                '}';
     }
 }

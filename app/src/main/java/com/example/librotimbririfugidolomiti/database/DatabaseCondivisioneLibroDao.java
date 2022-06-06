@@ -1,5 +1,6 @@
 package com.example.librotimbririfugidolomiti.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -10,10 +11,10 @@ import java.util.List;
 @Dao
 public interface DatabaseCondivisioneLibroDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Void insert(CondivisioneLibro condivisioneLibro);
 
     @Query("SELECT * FROM CondivisioneLibro WHERE CodicePersonaVisualizzante=:codicePersona")
-    List<CondivisioneLibro> getObtainedBook(String codicePersona);
+    LiveData<List<CondivisioneLibro>> getObtainedBook(String codicePersona);
 
 }

@@ -21,7 +21,7 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getAllHut();
     }
 
-    public Rifugio getHutById(int hutId) {
+    public LiveData<Rifugio> getHutById(int hutId) {
         return mRepository.getHutById(hutId);
     }
 
@@ -53,14 +53,6 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getNumberOfVisitByHut(codiceRifugio, codicePersona);
     }
 
-    public Integer getNumberOfLocalUsers() {
-        return mRepository.getNumberOfUsers("true");
-    }
-
-    public Integer getNumberOfNonLocalUsers() {
-        return mRepository.getNumberOfUsers("false");
-    }
-
     public void insert(Rifugio word) {
         mRepository.insert(word);
     }
@@ -81,16 +73,8 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getPersonById(codicePersona);
     }
 
-    public Persona getNonLocalPersonById(String codicePersona) {
-        return mRepository.getPersonById(codicePersona, "false");
-    }
-
-    public List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
+    public LiveData<List<VisitaRifugio>> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
         return mRepository.getVisitsByHutAndPerson(codiceRifugio, codicePersona);
-    }
-
-    public List<VisitaRifugio> getVisitsByPerson(String id) {
-        return mRepository.getVisitsByPerson(id);
     }
 
     public List<String> getAllLocalPeopleIDs() {
@@ -99,19 +83,6 @@ public class RifugiViewModel extends AndroidViewModel {
 
     public List<String> getAllNonLocalPeopleIDs() {
         return mRepository.getAllPeopleIDs("false");
-    }
-
-
-    public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita) {
-        mRepository.visitHut(codicePersona, codiceRifugio, dataVisita);
-    }
-
-    public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info) {
-        mRepository.visitHut(codicePersona, codiceRifugio, dataVisita, info);
-    }
-
-    public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, Integer rating) {
-        mRepository.visitHut(codicePersona, codiceRifugio, dataVisita, rating);
     }
 
     public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info, Integer rating) {
@@ -134,7 +105,7 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getHutIds();
     }
 
-    public List<CondivisioneLibro> getObtainedBook(String codicePersona) {
+    public LiveData<List<CondivisioneLibro>> getObtainedBook(String codicePersona) {
         return mRepository.getObtainedBook(codicePersona);
     }
 
@@ -145,5 +116,10 @@ public class RifugiViewModel extends AndroidViewModel {
     public LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona) {
         return mRepository.getAllTheHutWithNumberOfVisitByUserId(codicePersona);
     }
+
+    public List<VisitaRifugio> getAllVisitsByUser(String codicePersona) {
+        return mRepository.getAllVisitsByUser(codicePersona);
+    }
+
 }
 

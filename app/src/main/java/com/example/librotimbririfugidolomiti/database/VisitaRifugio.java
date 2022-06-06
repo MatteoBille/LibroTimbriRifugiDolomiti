@@ -130,4 +130,15 @@ public class VisitaRifugio {
     public int hashCode() {
         return Objects.hash(CodiceRifugio, CodicePersona, DataVisita, Info, Rating);
     }
+
+    @Override
+    public String toString() {
+        return "VisitaRifugio{" +
+                "CodiceRifugio=" + CodiceRifugio +
+                ", CodicePersona='" + CodicePersona + '\'' +
+                ", DataVisita='" + DataVisita + '\'' +
+                ", Info='" + Info + '\'' +
+                ", Rating=" + Rating +
+                '}';
+    }
 }

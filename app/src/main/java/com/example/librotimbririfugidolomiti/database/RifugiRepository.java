@@ -25,15 +25,7 @@ class RifugiRepository {
         return databaseRifugiDao.getAllHut();
     }
 
-    LiveData<Integer> getNumberOfDolomiticGroups() {
-        return databaseRifugiDao.getNumberOfDolomiticGroups();
-    }
-
-    LiveData<List<String>> getListOfDolomiticGroups() {
-        return databaseRifugiDao.getListOfDolomiticGroups();
-    }
-
-    Rifugio getHutById(int hutId) {
+    LiveData<Rifugio> getHutById(int hutId) {
         return databaseRifugiDao.getHutById(hutId);
     }
 
@@ -61,10 +53,6 @@ class RifugiRepository {
         return databaseVisiteRifugiDao.getNumberOfVisitByHut(codiceRifugio, codicePersona);
     }
 
-    Integer getNumberOfUsers(String local) {
-        return databasePersoneDao.getNumberOfUsers(local);
-    }
-
     Persona getPersonById(String codicePersona, String local) {
         return databasePersoneDao.getPersonById(codicePersona, local);
     }
@@ -73,16 +61,12 @@ class RifugiRepository {
         return databasePersoneDao.getPersonById(codicePersona);
     }
 
-    List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
+    LiveData<List<VisitaRifugio>> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
         return databaseVisiteRifugiDao.getVisitsByHutAndPerson(codiceRifugio, codicePersona);
     }
 
     List<String> getAllPeopleIDs(String local) {
         return databasePersoneDao.getAllPeopleIDs(local);
-    }
-
-    List<VisitaRifugio> getVisitsByPerson(String id) {
-        return databaseVisiteRifugiDao.getVisitsByPerson(id);
     }
 
     public Long insert(VisitaRifugio visitaRifugio) {
@@ -101,22 +85,6 @@ class RifugiRepository {
         return databaseCondivisioneLibroDao.insert(condivisioneLibro);
     }
 
-
-    public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita) {
-        databaseVisiteRifugiDao.visitHut(codicePersona, codiceRifugio, dataVisita);
-    }
-
-
-    public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info) {
-        databaseVisiteRifugiDao.visitHut(codicePersona, codiceRifugio, dataVisita, info);
-    }
-
-
-    public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, Integer rating) {
-        databaseVisiteRifugiDao.visitHut(codicePersona, codiceRifugio, dataVisita, rating);
-    }
-
-
     public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info, Integer rating) {
         databaseVisiteRifugiDao.visitHut(codicePersona, codiceRifugio, dataVisita, info, rating);
     }
@@ -134,7 +102,7 @@ class RifugiRepository {
         return databaseRifugiDao.getHutIds();
     }
 
-    List<CondivisioneLibro> getObtainedBook(String codicePersona) {
+    LiveData<List<CondivisioneLibro>> getObtainedBook(String codicePersona) {
         return databaseCondivisioneLibroDao.getObtainedBook(codicePersona);
     }
 
@@ -144,5 +112,9 @@ class RifugiRepository {
 
     public LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona) {
         return databaseVisiteRifugiDao.getAllTheHutWithNumberOfVisitByUserId(codicePersona);
+    }
+
+    public List<VisitaRifugio> getAllVisitsByUser(String codicePersona) {
+        return databaseVisiteRifugiDao.getAllVisitsByUser(codicePersona);
     }
 }

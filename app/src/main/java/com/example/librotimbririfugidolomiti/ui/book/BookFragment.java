@@ -1,13 +1,12 @@
 package com.example.librotimbririfugidolomiti.ui.book;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,18 +27,14 @@ import com.example.librotimbririfugidolomiti.databinding.FragmentBookBinding;
 import com.example.librotimbririfugidolomiti.ui.hutdetail.HutDetailActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BookFragment extends Fragment {
-    private RifugiViewModel mRifugiViewModel;
+    private RifugiViewModel databaseSql;
     private FragmentBookBinding binding;
     private int currentPage;
-
-    Map<Integer, List<Integer>> bookPages;
-    private SharedPreferences sharedPreferences;
-    String codicePersona;
+    private SparseArray<ArrayList<Integer>> bookPages;
+    private String codicePersona;
 
     public BookFragment() {
     }
@@ -54,6 +49,7 @@ public class BookFragment extends Fragment {
         return myFragment;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,41 +58,57 @@ public class BookFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-        sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-        codicePersona = getArguments().getString("codicePersona");
+        databaseSql = new ViewModelProvider(this).get(RifugiViewModel.class);
 
-        Persona owner = mRifugiViewModel.getPersonById(codicePersona);
+        if (getArguments() != null) {
+            codicePersona = getArguments().getString("codicePersona");
+        }
+
+        Persona owner = databaseSql.getPersonById(codicePersona);
         binding.nomePersona.setText(owner.getNomeCognome());
-        bookPages = setPagesMap();
+        bookPages = setHutsIdForEachPage();
+
 
         binding.next.setOnClickListener(v -> toNextPage());
         binding.prev.setOnClickListener(v -> toPrevPage());
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                toNextPage();
+            }
+
+            @Override
+            public void onSwipeRight() {
+                toPrevPage();
+            }
+        });
+
 
         currentPage = 0;
-        setPage(currentPage);
+        showPage(currentPage);
 
         return root;
     }
 
-    private Map<Integer, List<Integer>> setPagesMap() {
-        bookPages = new HashMap<>();
-        List<HutGroup> groups = mRifugiViewModel.getNumberOfHutforEachDolomitcGroup();
+
+    private SparseArray<ArrayList<Integer>> setHutsIdForEachPage() {
+        bookPages = new SparseArray<>();
+        List<HutGroup> groups = databaseSql.getNumberOfHutforEachDolomitcGroup();
         for (HutGroup group : groups) {
-            List<Rifugio> huts = mRifugiViewModel.getListOfHutByDolomiticGroup(group.getGruppoDolomitico());
+            List<Rifugio> huts = databaseSql.getListOfHutByDolomiticGroup(group.getGruppoDolomitico());
             for (int i = 0; i < huts.size(); i += 2) {
-                List<Integer> hutsCode = new ArrayList<>();
+                ArrayList<Integer> hutsCode = new ArrayList<>();
                 hutsCode.add(huts.get(i).getCodiceRifugio());
                 if (i + 1 < huts.size()) {
                     hutsCode.add(huts.get(i + 1).getCodiceRifugio());
                 }
-                bookPages.put(bookPages.size(), hutsCode);
+                bookPages.append(bookPages.size(), hutsCode);
             }
         }
         return bookPages;
     }
 
-    private void setPage(int pageNumber) {
+    private void showPage(int pageNumber) {
         if (isFinalPage()) {
             binding.next.setEnabled(false);
         }
@@ -112,39 +124,43 @@ public class BookFragment extends Fragment {
         List<Integer> hutsInThisPage = bookPages.get(pageNumber);
 
 
-        Rifugio hut1 = mRifugiViewModel.getHutById(hutsInThisPage.get(0));
-        binding.title.setText(hut1.getGruppoDolomitico());
-        setCardviewElementHut(hut1, codicePersona, binding.imageHut1, binding.imageHut1overlay, binding.nameHut1, binding.firstCardView);
+        databaseSql.getHutById(hutsInThisPage.get(0)).observe(getViewLifecycleOwner(), hut -> {
+            binding.title.setText(hut.getGruppoDolomitico());
+            setCardviewElementHut(hut, codicePersona, binding.imageHut1, binding.imageHut1overlay, binding.nameHut1, binding.firstCardView);
+        });
 
 
         if (hutsInThisPage.size() == 1) {
             binding.secondCardView.setVisibility(View.INVISIBLE);
         } else {
-            Rifugio hut2 = mRifugiViewModel.getHutById(hutsInThisPage.get(1));
-            setCardviewElementHut(hut2, codicePersona, binding.imageHut2, binding.imageHut2overlay, binding.nameHut2, binding.secondCardView);
+            databaseSql.getHutById(hutsInThisPage.get(1)).observe(getViewLifecycleOwner(), hut ->
+                    setCardviewElementHut(hut, codicePersona, binding.imageHut2, binding.imageHut2overlay, binding.nameHut2, binding.secondCardView)
+            );
         }
 
     }
 
-    private void setCardviewElementHut(Rifugio hut, String codicePersona, ImageView im1, ImageView imOverlay, TextView text, CardView cardView) {
+    private void setCardviewElementHut(Rifugio hut, String codicePersona, ImageView
+            im1, ImageView imOverlay, TextView text, CardView cardView) {
 
         Bitmap bit = BitmapFactory.decodeFile(requireContext().getFilesDir() + "/images/" + hut.getNomeImmagine());
+        int newHeight = 500;
+        float aspect = bit.getWidth() / (float) bit.getHeight();
+        int newWidth = (int) (newHeight * aspect);
+        bit = Bitmap.createScaledBitmap(bit, newWidth, newHeight, true);
         im1.setImageBitmap(bit);
         text.setText(hut.getNomeRifugio());
 
-        sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
-
-        int numberOfVisit1 = mRifugiViewModel.numberOfVisitByHutId(codicePersona, hut.getCodiceRifugio());
+        int numberOfVisit1 = databaseSql.numberOfVisitByHutId(codicePersona, hut.getCodiceRifugio());
 
         if (numberOfVisit1 > 0) {
             imOverlay.setVisibility(View.VISIBLE);
             imOverlay.setImageResource(R.drawable.timbro);
         }
 
-        cardView.setOnClickListener((e) -> {
-            Log.i("CODID", hut.getCodiceRifugio() + "");
-            openHutDetailsActivity(hut.getCodiceRifugio());
-        });
+        cardView.setOnClickListener((e) ->
+                openHutDetailsActivity(hut.getCodiceRifugio())
+        );
     }
 
     private boolean isFirstPage() {
@@ -153,6 +169,26 @@ public class BookFragment extends Fragment {
 
     private boolean isFinalPage() {
         return currentPage == bookPages.size() - 1;
+    }
+
+    private void toNextPage() {
+        binding.imageHut1overlay.setVisibility(View.INVISIBLE);
+        binding.imageHut2overlay.setVisibility(View.INVISIBLE);
+        if (currentPage < bookPages.size()) {
+            currentPage++;
+            showPage(currentPage);
+        }
+        binding.prev.setEnabled(true);
+    }
+
+    private void toPrevPage() {
+        binding.imageHut1overlay.setVisibility(View.INVISIBLE);
+        binding.imageHut2overlay.setVisibility(View.INVISIBLE);
+        if (currentPage >= 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+        binding.next.setEnabled(true);
     }
 
     private void openHutDetailsActivity(Integer codiceRifugio) {
@@ -164,26 +200,6 @@ public class BookFragment extends Fragment {
         }
         intent.putExtra("codiceRifugio", codiceRifugio);
         startActivity(intent);
-    }
-
-    private void toNextPage() {
-        binding.imageHut1overlay.setVisibility(View.INVISIBLE);
-        binding.imageHut2overlay.setVisibility(View.INVISIBLE);
-        if (currentPage < bookPages.size()) {
-            currentPage++;
-            setPage(currentPage);
-        }
-        binding.prev.setEnabled(true);
-    }
-
-    private void toPrevPage() {
-        binding.imageHut1overlay.setVisibility(View.INVISIBLE);
-        binding.imageHut2overlay.setVisibility(View.INVISIBLE);
-        if (currentPage >= 1) {
-            currentPage--;
-            setPage(currentPage);
-        }
-        binding.next.setEnabled(true);
     }
 
 }

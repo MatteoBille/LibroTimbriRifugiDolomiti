@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
         FirebaseFirestore fb = FirebaseFirestore.getInstance();
         rifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-        databaseSync = new SqlDatabaseFirebaseSyncronization(fb, rifugiViewModel);
+        databaseSync = new SqlDatabaseFirebaseSyncronization(fb, rifugiViewModel, this);
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
 

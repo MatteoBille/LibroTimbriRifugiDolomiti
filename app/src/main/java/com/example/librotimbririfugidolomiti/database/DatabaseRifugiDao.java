@@ -21,7 +21,7 @@ public interface DatabaseRifugiDao {
     LiveData<List<String>> getListOfDolomiticGroups();
 
     @Query("SELECT * FROM Rifugi where CodiceRifugio = :hutId")
-    Rifugio getHutById(int hutId);
+    LiveData<Rifugio> getHutById(int hutId);
 
     @Query("SELECT COUNT(CodiceRifugio) FROM Rifugi")
     Integer getNumberOfHut();

@@ -13,7 +13,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -106,13 +105,22 @@ public class VisitRifugio extends Fragment {
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
+
         ((TextView) popupView.findViewById(R.id.hutName)).setText(hut.getValue().getNomeRifugio());
-        ((Button) popupView.findViewById(R.id.visitButton)).setOnClickListener(e -> {
+        popupView.findViewById(R.id.visitButton).setOnClickListener(e -> {
             saveVisitInDb(hut, popupView, popupWindow);
+        });
+
+        RatingBar ratingBar = popupView.findViewById(R.id.ratingBar);
+        ratingBar.setRating(4.8f);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Log.i("POPUP", "onRatingChanged: rating : " + rating);
+            }
         });
 
 
@@ -192,13 +200,10 @@ public class VisitRifugio extends Fragment {
             double lon2 = destination.getLongitude();
 
             final int R = 6371;
-            // Radius of the earth in km
             double dLat = Math.toRadians(lat2 - lat1);
-            // deg2rad below
             double dLon = Math.toRadians(lon2 - lon1);
             double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            // Distance in m
             distance = (R * c) * 1000;
         }
         return distance;
