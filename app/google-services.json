@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "874252895161",
+    "project_id": "esame-sim",
+    "storage_bucket": "esame-sim.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874252895161:android:106ac8d292438886f2ec68",
+        "android_client_info": {
+          "package_name": "com.example.librotimbririfugidolomiti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874252895161-ngajfu10hn06qfnlq8jbr9k34eba23m2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMaS7jFHbYFl6NkWuGyxJtIWJR6K4b2SI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874252895161-ngajfu10hn06qfnlq8jbr9k34eba23m2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
