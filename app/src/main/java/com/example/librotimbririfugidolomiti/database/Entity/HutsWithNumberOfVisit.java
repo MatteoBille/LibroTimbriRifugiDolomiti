@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.database;
+package com.example.librotimbririfugidolomiti.database.Entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
@@ -6,23 +6,32 @@ import androidx.room.Embedded;
 public class HutsWithNumberOfVisit {
 
     @Embedded
-    Rifugio rifugio;
+    Rifugio entityHut;
 
     @ColumnInfo(name = "Visite")
     Integer Visite;
 
     public Rifugio getRifugio() {
-        return rifugio;
+        return entityHut;
     }
 
     public Integer getVisite() {
         return Visite;
     }
 
+
+    public void setEntityHut(Rifugio entityHut) {
+        this.entityHut = entityHut;
+    }
+
+    public void setVisite(Integer visite) {
+        Visite = visite;
+    }
+
     @Override
     public String toString() {
         return "HutsWithNumberOfVisit{" +
-                "rifugio=" + rifugio +
+                "rifugio=" + entityHut +
                 ", count=" + Visite +
                 '}';
     }

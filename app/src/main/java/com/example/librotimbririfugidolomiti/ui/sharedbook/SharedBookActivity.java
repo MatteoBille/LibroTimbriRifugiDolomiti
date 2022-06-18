@@ -13,6 +13,7 @@ import com.example.librotimbririfugidolomiti.ui.home.HomeFragment;
 public class SharedBookActivity extends AppCompatActivity {
 
     ActivitySharedBookBinding binding;
+    private static final String PERSON_ID_IDENTIFIER = "PersonId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +21,9 @@ public class SharedBookActivity extends AppCompatActivity {
         binding = ActivitySharedBookBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getSupportActionBar().hide();
+
         Bundle extras = getIntent().getExtras();
-        String codicePersona = extras.getString("codicePersona");
+        String codicePersona = extras.getString(PERSON_ID_IDENTIFIER);
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();

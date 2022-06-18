@@ -5,30 +5,27 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.database.Persona;
-import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
+import com.example.librotimbririfugidolomiti.database.HutsViewModel;
 import com.example.librotimbririfugidolomiti.databinding.ActivityLoginBinding;
 import com.example.librotimbririfugidolomiti.ui.MainActivity;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    ActivityLoginBinding binding;
-    private RifugiViewModel rifugiViewModel;
-    FirebaseFirestore firebaseDatabase;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor myEdit;
+    private ActivityLoginBinding binding;
+    private HutsViewModel databaseSql;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor myEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,54 +34,38 @@ public class LoginActivity extends AppCompatActivity {
         myEdit = sharedPreferences.edit();
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
-        rifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-        Log.i("INSERT", "SONO NEL LOGIN");
+        databaseSql = new ViewModelProvider(this).get(HutsViewModel.class);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        binding.login.setOnClickListener(e -> {
-            Log.i("INSERT", "BOTTONE PREMUTO");
-            createAccount();
-        });
+        binding.login.setOnClickListener(e -> createAccount());
 
     }
 
     private void createAccount() {
-        Log.i("INSERT", "STO CREANDO");
         String nome = binding.usernameName.getText().toString();
         String surname = binding.usernameSurname.getText().toString();
         String email = binding.email.getText().toString();
 
-        firebaseDatabase = FirebaseFirestore.getInstance();
+        FirebaseFirestore firebaseDatabase = FirebaseFirestore.getInstance();
 
-        Persona person = new Persona(nome + " " + surname, email);
-        Map<String, Object> user = person.toMap();
-        user.put("sharingOf", Arrays.asList());
+        Persona persona = new Persona(nome + " " + surname, email);
+        Map<String, Object> user = persona.toMap();
+        user.put("sharingOf", Collections.emptyList());
         firebaseDatabase.collection("users")
                 .add(user)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d("FIREBASE", "DocumentSnapshot added with ID: " + documentReference.getId());
-
-                        Persona person = new Persona(documentReference.getId(), nome + " " + surname, email);
-                        rifugiViewModel.insert(person);
+                        Persona persona = new Persona(documentReference.getId(), nome + " " + surname, email);
+                        databaseSql.insert(persona);
                         myEdit.putBoolean("firstTime", false);
-                        myEdit.putString("codicePersona", documentReference.getId());
-                        myEdit.commit();
-
-                        boolean firstTime = sharedPreferences.getBoolean("firstTime", true);
-                        Log.i("FIREBASE", firstTime + "");
+                        myEdit.putString("codicePersona", documentReference.getId()).apply();
 
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(intent);
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("FIREBASE", "Error writing document", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.w("FIREBASE", "Error writing document", e));
 
 
     }

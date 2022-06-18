@@ -4,16 +4,27 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.librotimbririfugidolomiti.database.Dao.DatabaseCondivisioneLibroDao;
+import com.example.librotimbririfugidolomiti.database.Dao.DatabasePersoneDao;
+import com.example.librotimbririfugidolomiti.database.Dao.DatabaseRifugiDao;
+import com.example.librotimbririfugidolomiti.database.Dao.DatabaseVisiteRifugiDao;
+import com.example.librotimbririfugidolomiti.database.Entity.CondivisioneLibro;
+import com.example.librotimbririfugidolomiti.database.Entity.HutGroup;
+import com.example.librotimbririfugidolomiti.database.Entity.HutsWithNumberOfVisit;
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
+import com.example.librotimbririfugidolomiti.database.Entity.Rifugio;
+import com.example.librotimbririfugidolomiti.database.Entity.VisitaRifugio;
+
 import java.util.List;
 
-class RifugiRepository {
+class HutsRepository {
 
     final private DatabaseVisiteRifugiDao databaseVisiteRifugiDao;
     final private DatabasePersoneDao databasePersoneDao;
     final private DatabaseRifugiDao databaseRifugiDao;
     final private DatabaseCondivisioneLibroDao databaseCondivisioneLibroDao;
 
-    RifugiRepository(Application application) {
+    HutsRepository(Application application) {
         RifugiRoomDatabase db = RifugiRoomDatabase.getDatabase(application);
         databaseVisiteRifugiDao = db.visiteRifugiDao();
         databasePersoneDao = db.personeDao();
@@ -42,11 +53,11 @@ class RifugiRepository {
     }
 
     List<HutGroup> getNumberOfHutforEachDolomitcGroup() {
-        return databaseVisiteRifugiDao.getNumberOfHutforEachDolomitcGroup();
+        return databaseRifugiDao.getNumberOfHutforEachDolomitcGroup();
     }
 
     List<Rifugio> getListOfHutByDolomiticGroup(String groupName) {
-        return databaseVisiteRifugiDao.getListOfHutByDolomiticGroup(groupName);
+        return databaseRifugiDao.getListOfHutByDolomiticGroup(groupName);
     }
 
     Integer getNumberOfVisitByHut(Integer codiceRifugio, String codicePersona) {
@@ -61,7 +72,11 @@ class RifugiRepository {
         return databasePersoneDao.getPersonById(codicePersona);
     }
 
-    LiveData<List<VisitaRifugio>> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
+    LiveData<List<VisitaRifugio>> getVisitsByHutAndPersonAsync(Integer codiceRifugio, String codicePersona) {
+        return databaseVisiteRifugiDao.getVisitsByHutAndPersonAsync(codiceRifugio, codicePersona);
+    }
+
+    List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
         return databaseVisiteRifugiDao.getVisitsByHutAndPerson(codiceRifugio, codicePersona);
     }
 
@@ -69,12 +84,12 @@ class RifugiRepository {
         return databasePersoneDao.getAllPeopleIDs(local);
     }
 
-    public Long insert(VisitaRifugio visitaRifugio) {
-        return databaseVisiteRifugiDao.insert(visitaRifugio);
+    public Long insert(VisitaRifugio visitRifugio) {
+        return databaseVisiteRifugiDao.insert(visitRifugio);
     }
 
-    void insert(Rifugio rifugio) {
-        RifugiRoomDatabase.databaseWriteExecutor.execute(() -> databaseRifugiDao.insert(rifugio));
+    void insert(Rifugio hut) {
+        RifugiRoomDatabase.databaseWriteExecutor.execute(() -> databaseRifugiDao.insert(hut));
     }
 
     public Long insert(Persona persona) {
@@ -102,9 +117,14 @@ class RifugiRepository {
         return databaseRifugiDao.getHutIds();
     }
 
-    LiveData<List<CondivisioneLibro>> getObtainedBook(String codicePersona) {
+    LiveData<List<CondivisioneLibro>> getObtainedBookAsync(String codicePersona) {
+        return databaseCondivisioneLibroDao.getObtainedBookAsync(codicePersona);
+    }
+
+    List<CondivisioneLibro> getObtainedBook(String codicePersona) {
         return databaseCondivisioneLibroDao.getObtainedBook(codicePersona);
     }
+
 
     public VisitaRifugio getVisitsByHutPersonAndDate(Integer codiceRifugio, String codicePersona, String dataVisita) {
         return databaseVisiteRifugiDao.getVisitsByHutPersonAndDate(codiceRifugio, codicePersona, dataVisita);

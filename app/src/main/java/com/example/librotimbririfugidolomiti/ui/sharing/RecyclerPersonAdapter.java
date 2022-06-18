@@ -8,9 +8,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.database.Persona;
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerPersonAdapter extends RecyclerView.Adapter<RecyclerPersonAdapter.PersonViewHolder> {
@@ -24,14 +23,15 @@ public class RecyclerPersonAdapter extends RecyclerView.Adapter<RecyclerPersonAd
     }
 
     public void add(List<Persona> people) {
-        for (Persona person : people) {
-            add(person);
+        for (Persona persona : people) {
+            add(persona);
         }
     }
 
-    public void add(Persona person) {
-        ((ArrayList<Persona>) obtainedPeople).remove(person);
-        ((ArrayList<Persona>) obtainedPeople).add(person);
+    public void add(Persona persona) {
+        if (!obtainedPeople.contains(persona)) {
+            obtainedPeople.add(persona);
+        }
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
+import com.example.librotimbririfugidolomiti.database.Entity.VisitaRifugio;
 
 import java.util.List;
 

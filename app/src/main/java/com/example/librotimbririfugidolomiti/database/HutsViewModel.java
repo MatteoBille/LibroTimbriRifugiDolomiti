@@ -5,15 +5,22 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.librotimbririfugidolomiti.database.Entity.CondivisioneLibro;
+import com.example.librotimbririfugidolomiti.database.Entity.HutGroup;
+import com.example.librotimbririfugidolomiti.database.Entity.HutsWithNumberOfVisit;
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
+import com.example.librotimbririfugidolomiti.database.Entity.Rifugio;
+import com.example.librotimbririfugidolomiti.database.Entity.VisitaRifugio;
+
 import java.util.List;
 
-public class RifugiViewModel extends AndroidViewModel {
+public class HutsViewModel extends AndroidViewModel {
 
-    private final RifugiRepository mRepository;
+    private final HutsRepository mRepository;
 
-    public RifugiViewModel(Application application) {
+    public HutsViewModel(Application application) {
         super(application);
-        mRepository = new RifugiRepository(application);
+        mRepository = new HutsRepository(application);
 
     }
 
@@ -45,16 +52,16 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getListOfHutByDolomiticGroup(groupName);
     }
 
-    public Long insert(VisitaRifugio visitaRifugio) {
-        return mRepository.insert(visitaRifugio);
+    public Long insert(VisitaRifugio visitRifugio) {
+        return mRepository.insert(visitRifugio);
     }
 
     public Integer getNumberOfVisitByHut(Integer codiceRifugio, String codicePersona) {
         return mRepository.getNumberOfVisitByHut(codiceRifugio, codicePersona);
     }
 
-    public void insert(Rifugio word) {
-        mRepository.insert(word);
+    public void insert(Rifugio hut) {
+        mRepository.insert(hut);
     }
 
     public Long insert(Persona persona) {
@@ -73,9 +80,14 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getPersonById(codicePersona);
     }
 
-    public LiveData<List<VisitaRifugio>> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
+    public LiveData<List<VisitaRifugio>> getVisitsByHutAndPersonAsync(Integer codiceRifugio, String codicePersona) {
+        return mRepository.getVisitsByHutAndPersonAsync(codiceRifugio, codicePersona);
+    }
+
+    public List<VisitaRifugio> getVisitsByHutAndPerson(Integer codiceRifugio, String codicePersona) {
         return mRepository.getVisitsByHutAndPerson(codiceRifugio, codicePersona);
     }
+
 
     public List<String> getAllLocalPeopleIDs() {
         return mRepository.getAllPeopleIDs("true");
@@ -105,9 +117,14 @@ public class RifugiViewModel extends AndroidViewModel {
         return mRepository.getHutIds();
     }
 
-    public LiveData<List<CondivisioneLibro>> getObtainedBook(String codicePersona) {
+    public LiveData<List<CondivisioneLibro>> getObtainedBookAsync(String codicePersona) {
+        return mRepository.getObtainedBookAsync(codicePersona);
+    }
+
+    public List<CondivisioneLibro> getObtainedBook(String codicePersona) {
         return mRepository.getObtainedBook(codicePersona);
     }
+
 
     public VisitaRifugio getVisitsByHutPersonAndDate(Integer codiceRifugio, String codicePersona, String dataVisita) {
         return mRepository.getVisitsByHutPersonAndDate(codiceRifugio, codicePersona, dataVisita);

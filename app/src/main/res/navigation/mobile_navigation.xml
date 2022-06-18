@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_visita"
-        android:name="com.example.librotimbririfugidolomiti.ui.visithut.VisitRifugio"
+        android:name="com.example.librotimbririfugidolomiti.ui.visithut.VisitHutFragment"
         android:label="@string/visita"
         tools:layout="@layout/fragment_book" />
 

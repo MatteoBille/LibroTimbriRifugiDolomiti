@@ -28,4 +28,7 @@
     <string name="save_your_hiking_feels">Racconta la tua visita:</string>
     <string name="rating_your_hiking">Com\'è stata la camminata?</string>
     <string name="save_the_visit">Salva la visita</string>
+    <string name="loginTitle">BENVENUTO</string>
+    <string name="nearest_hut">Rifugio più vicino</string>
+    <string name="visit">Visita!</string>
 </resources>

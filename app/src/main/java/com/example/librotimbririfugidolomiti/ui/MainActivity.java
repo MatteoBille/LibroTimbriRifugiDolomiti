@@ -21,7 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.librotimbririfugidolomiti.FileHelper;
 import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.SqlDatabaseFirebaseSyncronization;
-import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
+import com.example.librotimbririfugidolomiti.database.HutsViewModel;
 import com.example.librotimbririfugidolomiti.databinding.ActivityMainBinding;
 import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.INTERNET
             };
     private SharedPreferences.Editor myEdit;
-    RifugiViewModel rifugiViewModel;
+    HutsViewModel hutsViewModel;
     SqlDatabaseFirebaseSyncronization databaseSync;
     private final Handler mHandler = new Handler();
 
@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         checkPermissions();
         FirebaseFirestore fb = FirebaseFirestore.getInstance();
-        rifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
-        databaseSync = new SqlDatabaseFirebaseSyncronization(fb, rifugiViewModel, this);
+        hutsViewModel = new ViewModelProvider(this).get(HutsViewModel.class);
+        databaseSync = new SqlDatabaseFirebaseSyncronization(fb, hutsViewModel, this);
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
 

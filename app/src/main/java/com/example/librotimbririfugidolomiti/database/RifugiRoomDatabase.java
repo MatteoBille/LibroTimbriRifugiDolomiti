@@ -6,6 +6,15 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.librotimbririfugidolomiti.database.Dao.DatabaseCondivisioneLibroDao;
+import com.example.librotimbririfugidolomiti.database.Dao.DatabasePersoneDao;
+import com.example.librotimbririfugidolomiti.database.Dao.DatabaseRifugiDao;
+import com.example.librotimbririfugidolomiti.database.Dao.DatabaseVisiteRifugiDao;
+import com.example.librotimbririfugidolomiti.database.Entity.CondivisioneLibro;
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
+import com.example.librotimbririfugidolomiti.database.Entity.Rifugio;
+import com.example.librotimbririfugidolomiti.database.Entity.VisitaRifugio;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

@@ -19,8 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.database.HutsWithNumberOfVisit;
-import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
+import com.example.librotimbririfugidolomiti.database.Entity.HutsWithNumberOfVisit;
+import com.example.librotimbririfugidolomiti.database.HutsViewModel;
 import com.example.librotimbririfugidolomiti.databinding.FragmentMapBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,21 +34,18 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private FragmentMapBinding binding;
     private GoogleMap mMap;
-    private RifugiViewModel mRifugiViewModel;
-    private SharedPreferences sharedPreferences;
+    private HutsViewModel databaseSql;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-        binding = FragmentMapBinding.inflate(inflater, container, false);
-        mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
+        FragmentMapBinding binding = FragmentMapBinding.inflate(inflater, container, false);
+        databaseSql = new ViewModelProvider(this).get(HutsViewModel.class);
         View root = binding.getRoot();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -64,18 +61,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         try {
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            getContext(), R.raw.style_json));
+                            requireContext(), R.raw.style_json));
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
-        sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         String codicePersona = sharedPreferences.getString("codicePersona", null);
 
-        mRifugiViewModel.getAllTheHutWithNumberOfVisitByUserId(codicePersona).observe(getViewLifecycleOwner(), huts -> {
-            Map<String, LatLng> rifugiLatLong = new HashMap();
+        databaseSql.getAllTheHutWithNumberOfVisitByUserId(codicePersona).observe(getViewLifecycleOwner(), huts -> {
+            HashMap<String, LatLng> rifugiLatLong = new HashMap<>();
 
             for (HutsWithNumberOfVisit hut : huts) {
                 double latitudine = hut.getRifugio().getLatitudine();

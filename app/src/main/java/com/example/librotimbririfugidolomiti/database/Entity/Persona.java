@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.database;
+package com.example.librotimbririfugidolomiti.database.Entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -9,6 +9,7 @@ import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Entity(tableName = "Persone")
 public class Persona {
@@ -95,6 +96,20 @@ public class Persona {
     @NonNull
     public String getLocal() {
         return Local;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Persona persona = (Persona) o;
+        return CodicePersona.equals(persona.CodicePersona);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CodicePersona);
     }
 
     @Override

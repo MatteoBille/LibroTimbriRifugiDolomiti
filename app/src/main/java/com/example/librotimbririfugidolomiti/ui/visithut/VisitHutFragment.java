@@ -24,10 +24,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
-import com.example.librotimbririfugidolomiti.database.Rifugio;
-import com.example.librotimbririfugidolomiti.database.VisitaRifugio;
-import com.example.librotimbririfugidolomiti.databinding.FragmentVisitRifugioBinding;
+import com.example.librotimbririfugidolomiti.database.Entity.Rifugio;
+import com.example.librotimbririfugidolomiti.database.Entity.VisitaRifugio;
+import com.example.librotimbririfugidolomiti.database.HutsViewModel;
+import com.example.librotimbririfugidolomiti.databinding.FragmentVisitHutBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,11 +44,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 
-public class VisitRifugio extends Fragment {
+public class VisitHutFragment extends Fragment {
 
     private FusedLocationProviderClient fusedLocationClient;
-    FragmentVisitRifugioBinding binding;
-    private RifugiViewModel mRifugiViewModel;
+    FragmentVisitHutBinding binding;
+    private HutsViewModel mHutsViewModel;
     HashMap<LatLng, Integer> rifugesLocation;
     SortedMap<Double, Integer> synchronizedDistanzaRifugio = Collections.synchronizedSortedMap(new TreeMap<>());
     boolean viewOpen;
@@ -63,7 +63,7 @@ public class VisitRifugio extends Fragment {
         }
     };
 
-    public VisitRifugio() {
+    public VisitHutFragment() {
     }
 
     @Override
@@ -71,19 +71,19 @@ public class VisitRifugio extends Fragment {
                              Bundle savedInstanceState) {
         sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
-        binding = FragmentVisitRifugioBinding.inflate(inflater, container, false);
+        binding = FragmentVisitHutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
+        mHutsViewModel = new ViewModelProvider(this).get(HutsViewModel.class);
 
         binding.button.setEnabled(false);
         binding.button.setOnClickListener(v -> openVisitPopup());
 
         rifugesLocation = new HashMap<>();
 
-        mRifugiViewModel.getAllRifugi().observe(getViewLifecycleOwner(), Huts -> {
-            for (Rifugio hut : Huts) {
-                LatLng tempCord = new LatLng(hut.getLatitudine(), hut.getLongitudine());
-                rifugesLocation.put(tempCord, hut.getCodiceRifugio());
+        mHutsViewModel.getAllRifugi().observe(getViewLifecycleOwner(), Huts -> {
+            for (Rifugio entityHut : Huts) {
+                LatLng tempCord = new LatLng(entityHut.getLatitudine(), entityHut.getLongitudine());
+                rifugesLocation.put(tempCord, entityHut.getCodiceRifugio());
             }
             viewOpen = true;
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
@@ -95,7 +95,7 @@ public class VisitRifugio extends Fragment {
 
     private void openVisitPopup() {
         Double key = synchronizedDistanzaRifugio.firstKey();
-        mRifugiViewModel.getHutById(synchronizedDistanzaRifugio.get(key)).observe(getViewLifecycleOwner(), hut -> {
+        mHutsViewModel.getHutById(synchronizedDistanzaRifugio.get(key)).observe(getViewLifecycleOwner(), hut -> {
             View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_insert_visit_popup, null);
             int width = LinearLayout.LayoutParams.MATCH_PARENT;
             int height = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -111,8 +111,8 @@ public class VisitRifugio extends Fragment {
     }
 
 
-    private void saveVisitInDb(Rifugio hut, View popupView, PopupWindow popupWindow) {
-        int idRifugio = hut.getCodiceRifugio();
+    private void saveVisitInDb(Rifugio entityHut, View popupView, PopupWindow popupWindow) {
+        int idRifugio = entityHut.getCodiceRifugio();
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dataVisita = sdf.format(currentTime);
@@ -122,7 +122,7 @@ public class VisitRifugio extends Fragment {
         Integer star = Math.round(((RatingBar) popupView.findViewById(R.id.ratingBar)).getRating());
         String codicePersona = sharedPreferences.getString("codicePersona", null);
 
-        mRifugiViewModel.visitHut(codicePersona, idRifugio, dataVisita, info, star);
+        mHutsViewModel.visitHut(codicePersona, idRifugio, dataVisita, info, star);
         popupWindow.dismiss();
     }
 
@@ -133,7 +133,7 @@ public class VisitRifugio extends Fragment {
             synchronizedDistanzaRifugio.put(distance, entry.getValue());
         }
         Integer nearestHutId = synchronizedDistanzaRifugio.get(synchronizedDistanzaRifugio.firstKey());
-        mRifugiViewModel.getHutById(nearestHutId).observe(getViewLifecycleOwner(), nearestHut -> {
+        mHutsViewModel.getHutById(nearestHutId).observe(getViewLifecycleOwner(), nearestHut -> {
             String formattedDistance = formatDistance(synchronizedDistanzaRifugio.firstKey());
             binding.distanza.setText(formattedDistance);
             binding.nomeRifugio.setText(nearestHut.getNomeRifugio());
@@ -143,8 +143,8 @@ public class VisitRifugio extends Fragment {
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String dataVisita = sdf.format(currentTime);
-            VisitaRifugio visitaRifugio = mRifugiViewModel.getVisitsByHutPersonAndDate(nearestHut.getCodiceRifugio(), codicePersona, dataVisita);
-            if (visitaRifugio != null) {
+            VisitaRifugio visitRifugio = mHutsViewModel.getVisitsByHutPersonAndDate(nearestHut.getCodiceRifugio(), codicePersona, dataVisita);
+            if (visitRifugio != null) {
                 binding.button.setEnabled(false);
             } else {
                 binding.button.setEnabled(true);
@@ -158,7 +158,7 @@ public class VisitRifugio extends Fragment {
                     binding.distanza.setTextColor(Color.GREEN);
                 }
             }
-            int nVisit = mRifugiViewModel.getNumberOfVisitByHut(nearestHut.getCodiceRifugio(), codicePersona);
+            int nVisit = mHutsViewModel.getNumberOfVisitByHut(nearestHut.getCodiceRifugio(), codicePersona);
 
             String numberOfVisitsStringDescriptor = getResources().getText(R.string.numberOfVisits).toString();
             binding.numeroVisite.setText(MessageFormat.format(numberOfVisitsStringDescriptor, nVisit));

@@ -5,7 +5,6 @@ import static android.view.View.GONE;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -21,14 +20,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.librotimbririfugidolomiti.R;
-import com.example.librotimbririfugidolomiti.database.Persona;
-import com.example.librotimbririfugidolomiti.database.RifugiViewModel;
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
+import com.example.librotimbririfugidolomiti.database.HutsViewModel;
 import com.example.librotimbririfugidolomiti.databinding.FragmentHomeBinding;
-import com.example.librotimbririfugidolomiti.ui.book.MyBookActivity;
+import com.example.librotimbririfugidolomiti.ui.book.BookActivity;
 import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class HomeFragment extends Fragment {
-    private RifugiViewModel mRifugiViewModel;
+    private HutsViewModel databaseSql;
     private FragmentHomeBinding binding;
     private SharedPreferences sharedPreferences;
     private String personId;
@@ -36,11 +40,14 @@ public class HomeFragment extends Fragment {
     private final Handler mHandler = new Handler();
     private final Runnable setArgumentsAsync = this::setFragmentArguments;
 
+    private static final String PERSON_ID_IDENTIFIER = "PersonId";
+    private static final String OBTAINED_IDENTIFIER = "Obtained";
+
     public static HomeFragment newInstance(String codicePersona, boolean obtained) {
         HomeFragment myFragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString("codicePersona", codicePersona);
-        args.putBoolean("obtained", obtained);
+        args.putString(PERSON_ID_IDENTIFIER, codicePersona);
+        args.putBoolean(OBTAINED_IDENTIFIER, obtained);
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -52,24 +59,24 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mRifugiViewModel = new ViewModelProvider(this).get(RifugiViewModel.class);
+        databaseSql = new ViewModelProvider(this).get(HutsViewModel.class);
         sharedPreferences = requireActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
 
         if (getArguments() == null) {
             personId = sharedPreferences.getString("codicePersona", null);
             obtained = false;
         } else {
-            personId = getArguments().getString("codicePersona");
-            obtained = getArguments().getBoolean("obtained");
+            personId = getArguments().getString(PERSON_ID_IDENTIFIER);
+            obtained = getArguments().getBoolean(OBTAINED_IDENTIFIER);
             if (obtained) {
                 binding.highBar.setVisibility(GONE);
             }
         }
 
         binding.goToBook.setOnClickListener(e -> {
-            Intent intent = new Intent(root.getContext(), MyBookActivity.class);
-            intent.putExtra("codicePersona", personId);
-            intent.putExtra("obtained", obtained);
+            Intent intent = new Intent(root.getContext(), BookActivity.class);
+            intent.putExtra(PERSON_ID_IDENTIFIER, personId);
+            intent.putExtra(OBTAINED_IDENTIFIER, obtained);
             startActivity(intent);
         });
 
@@ -83,19 +90,32 @@ public class HomeFragment extends Fragment {
 
     private void setFragmentArguments() {
 
-        Persona person = mRifugiViewModel.getPersonById(personId);
-        binding.name.setText(person.getNomeCognome());
+        Persona persona = databaseSql.getPersonById(personId);
+        binding.name.setText(persona.getNomeCognome());
 
-        Integer numberOfHut = mRifugiViewModel.getNumberOfHut();
-        Integer numberOfHutVisited = mRifugiViewModel.getNumberOfHutVisited(personId);
-        String date = mRifugiViewModel.getLastVisitDay(personId);
+        Integer numberOfHut = databaseSql.getNumberOfHut();
+        Integer numberOfHutVisited = databaseSql.getNumberOfHutVisited(personId);
+        String date = databaseSql.getLastVisitDay(personId);
+
+        try {
+            if (date != null) {
+                Date dateLastVisit = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                String dateLastVisitString = String.format(getResources().getString(R.string.lastVisit), dateFormat.format(dateLastVisit));
+                binding.lastVisit.setText(dateLastVisitString);
+            } else {
+                binding.lastVisit.setText("Rifugio non acora visitato");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         String visitedHuts = String.format(getResources().getString(R.string.visitedHuts), numberOfHutVisited, numberOfHut);
         binding.visitedHuts.setText(visitedHuts);
 
-        String dateLastVisit = String.format(getResources().getString(R.string.lastVisit), date);
-        binding.lastVisit.setText(dateLastVisit);
+
     }
 
 
@@ -105,10 +125,8 @@ public class HomeFragment extends Fragment {
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        popupWindow.setOutsideTouchable(true);
 
-        mRifugiViewModel.getAllLocalPeople().observe(getViewLifecycleOwner(), persons -> {
+        databaseSql.getAllLocalPeople().observe(getViewLifecycleOwner(), persons -> {
             switch (persons.size()) {
                 case 3:
                     setTextAndListener(popupView, persons.get(2), R.id.id3, popupWindow);
@@ -137,11 +155,11 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void setTextAndListener(View popupView, Persona person, int p, PopupWindow popupWindow) {
+    private void setTextAndListener(View popupView, Persona persona, int p, PopupWindow popupWindow) {
         Button but = popupView.findViewById(p);
-        but.setText(person.getNomeCognome());
+        but.setText(persona.getNomeCognome());
         but.setOnClickListener(e -> {
-            changeUser(person);
+            changeUser(persona);
             popupWindow.dismiss();
         });
 
@@ -152,9 +170,9 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void changeUser(Persona person) {
+    private void changeUser(Persona persona) {
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putString("codicePersona", person.getCodicePersona()).apply();
+        myEdit.putString("codicePersona", persona.getCodicePersona()).apply();
         personId = sharedPreferences.getString("codicePersona", null);
         mHandler.post(setArgumentsAsync);
     }

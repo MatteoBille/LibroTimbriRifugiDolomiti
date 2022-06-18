@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.database;
+package com.example.librotimbririfugidolomiti.database.Entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

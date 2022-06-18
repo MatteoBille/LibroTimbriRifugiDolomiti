@@ -1,10 +1,12 @@
-package com.example.librotimbririfugidolomiti.database;
+package com.example.librotimbririfugidolomiti.database.Dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+
+import com.example.librotimbririfugidolomiti.database.Entity.Persona;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.librotimbririfugidolomiti.database;
+package com.example.librotimbririfugidolomiti.database.Entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -39,5 +39,13 @@ public class CondivisioneLibro {
 
     public void setCodicePersonaVisualizzante(@NonNull String codicePersonaVisualizzante) {
         CodicePersonaVisualizzante = codicePersonaVisualizzante;
+    }
+
+    @Override
+    public String toString() {
+        return "CondivisioneLibro{" +
+                "CodicePersonaProprietaria='" + CodicePersonaProprietaria + '\'' +
+                ", CodicePersonaVisualizzante='" + CodicePersonaVisualizzante + '\'' +
+                '}';
     }
 }
