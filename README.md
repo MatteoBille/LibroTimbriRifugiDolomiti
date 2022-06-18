@@ -25,9 +25,9 @@ E' la schermata iniziale da cui è possibile navigare nelle altre schermate:
 - Condivisione e libri condivisi;
 
 ## Schermata inserimento visita
-
-<img src="https://drive.google.com/uc?id=1Ut0DYzbL9zVfr7ivJNmkS0TLveuU6CCI" alt="drawing" width="200"/>
-<img src="https://drive.google.com/uc?id=1uUqgeH590sbp-q5E57ahe9s-YCapGOXi" alt="drawing" width="200"/>
+|||
+|---|---|
+|<img src="https://drive.google.com/uc?id=1Ut0DYzbL9zVfr7ivJNmkS0TLveuU6CCI" alt="drawing" width="200"/>|<img src="https://drive.google.com/uc?id=1uUqgeH590sbp-q5E57ahe9s-YCapGOXi" alt="drawing" width="200"/>|
 
 Se la distanza dal rifugio è inferiore ai 100m è possibile visitarlo. Si aprirà un popup in cui sarà
 possibile inserire delle informazioni e una valutazione.
