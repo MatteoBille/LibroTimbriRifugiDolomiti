@@ -88,13 +88,8 @@ public class HutsViewModel extends AndroidViewModel {
         return mRepository.getVisitsByHutAndPerson(codiceRifugio, codicePersona);
     }
 
-
     public List<String> getAllLocalPeopleIDs() {
         return mRepository.getAllPeopleIDs("true");
-    }
-
-    public List<String> getAllNonLocalPeopleIDs() {
-        return mRepository.getAllPeopleIDs("false");
     }
 
     public void visitHut(String codicePersona, Integer codiceRifugio, String dataVisita, String info, Integer rating) {
@@ -107,10 +102,6 @@ public class HutsViewModel extends AndroidViewModel {
 
     public LiveData<List<Persona>> getAllLocalPeople() {
         return mRepository.getAllPeople("true");
-    }
-
-    public LiveData<List<Persona>> getAllNonLocalPeople() {
-        return mRepository.getAllPeople("false");
     }
 
     public List<Integer> getHutIds() {
@@ -132,10 +123,6 @@ public class HutsViewModel extends AndroidViewModel {
 
     public LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona) {
         return mRepository.getAllTheHutWithNumberOfVisitByUserId(codicePersona);
-    }
-
-    public List<VisitaRifugio> getAllVisitsByUser(String codicePersona) {
-        return mRepository.getAllVisitsByUser(codicePersona);
     }
 
 }

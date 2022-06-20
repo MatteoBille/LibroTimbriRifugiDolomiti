@@ -20,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Collections;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
     private HutsViewModel databaseSql;
@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Persona persona = new Persona(nome + " " + surname, email);
         Map<String, Object> user = persona.toMap();
+
         user.put("sharingOf", Collections.emptyList());
         firebaseDatabase.collection("users")
                 .add(user)
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         Persona persona = new Persona(documentReference.getId(), nome + " " + surname, email);
                         databaseSql.insert(persona);
+
                         myEdit.putBoolean("firstTime", false);
                         myEdit.putString("codicePersona", documentReference.getId()).apply();
 

@@ -166,14 +166,14 @@ public class SharingFragment extends Fragment implements RecyclerPersonAdapter.O
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
-                                retrieveAllTheVisistsFromAUserAndSaveOnLocalDb(id, document);
+                                retrieveAllTheVisistsFromAUserInFirestormAndSaveOnLocalDb(id, document);
                             }
                         }
                     });
         }
     }
 
-    private void retrieveAllTheVisistsFromAUserAndSaveOnLocalDb(String id, DocumentSnapshot document) {
+    private void retrieveAllTheVisistsFromAUserInFirestormAndSaveOnLocalDb(String id, DocumentSnapshot document) {
         List<String> obtained = (List<String>) document.get("sharingOf");
         if (obtained != null && obtained.size() != 0) {
             for (String id2 : obtained)

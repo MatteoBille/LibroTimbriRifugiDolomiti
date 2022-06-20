@@ -125,7 +125,6 @@ class HutsRepository {
         return databaseCondivisioneLibroDao.getObtainedBook(codicePersona);
     }
 
-
     public VisitaRifugio getVisitsByHutPersonAndDate(Integer codiceRifugio, String codicePersona, String dataVisita) {
         return databaseVisiteRifugiDao.getVisitsByHutPersonAndDate(codiceRifugio, codicePersona, dataVisita);
     }
@@ -134,7 +133,4 @@ class HutsRepository {
         return databaseVisiteRifugiDao.getAllTheHutWithNumberOfVisitByUserId(codicePersona);
     }
 
-    public List<VisitaRifugio> getAllVisitsByUser(String codicePersona) {
-        return databaseVisiteRifugiDao.getAllVisitsByUser(codicePersona);
-    }
 }

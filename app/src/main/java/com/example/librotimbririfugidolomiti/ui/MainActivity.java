@@ -23,7 +23,7 @@ import com.example.librotimbririfugidolomiti.R;
 import com.example.librotimbririfugidolomiti.SqlDatabaseFirebaseSyncronization;
 import com.example.librotimbririfugidolomiti.database.HutsViewModel;
 import com.example.librotimbririfugidolomiti.databinding.ActivityMainBinding;
-import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
+import com.example.librotimbririfugidolomiti.ui.login.SignUpActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.FileInputStream;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void firstTimeRoutine() {
         copyAssets("images");
-        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+        Intent intent = new Intent(getBaseContext(), SignUpActivity.class);
         startActivity(intent);
         myEdit.apply();
     }

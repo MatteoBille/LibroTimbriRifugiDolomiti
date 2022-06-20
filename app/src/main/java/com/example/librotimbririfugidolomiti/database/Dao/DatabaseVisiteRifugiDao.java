@@ -14,13 +14,11 @@ import java.util.List;
 @Dao
 public interface DatabaseVisiteRifugiDao {
 
-
     @Query("SELECT COUNT(DISTINCT CodiceRifugio ) FROM VisiteRifugi  WHERE CodicePersona=:codicePersona")
     Integer getNumberOfHutVisited(String codicePersona);
 
     @Query("SELECT MAX(DataVisita) FROM VisiteRifugi WHERE CodicePersona=:codicePersona")
     String getLastVisitDay(String codicePersona);
-
 
     @Query("SELECT COUNT(*) FROM VisiteRifugi WHERE CodiceRifugio=:codiceRifugio AND CodicePersona=:codicePersona")
     Integer getNumberOfVisitByHut(Integer codiceRifugio, String codicePersona);
@@ -42,9 +40,6 @@ public interface DatabaseVisiteRifugiDao {
 
     @Query("SELECT Rifugi.*,Visite FROM Rifugi LEFT OUTER JOIN (SELECT CodiceRifugio,COUNT(CodiceRifugio) As Visite FROM VisiteRifugi WHERE VisiteRifugi.CodicePersona=:codicePersona GROUP BY (CodiceRifugio))AS Counter ON Rifugi.CodiceRifugio= Counter.CodiceRifugio")
     LiveData<List<HutsWithNumberOfVisit>> getAllTheHutWithNumberOfVisitByUserId(String codicePersona);
-
-    @Query("SELECT * FROM VisiteRifugi WHERE VisiteRifugi.CodicePersona=:codicePersona GROUP BY (CodiceRifugio)")
-    List<VisitaRifugio> getAllVisitsByUser(String codicePersona);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Long insert(VisitaRifugio visitRifugio);

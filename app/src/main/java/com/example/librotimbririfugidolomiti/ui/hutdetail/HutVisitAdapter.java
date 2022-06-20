@@ -1,6 +1,5 @@
 package com.example.librotimbririfugidolomiti.ui.hutdetail;
 
-import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +24,6 @@ public class HutVisitAdapter extends RecyclerView.Adapter<HutVisitHolder> {
 
     @Override
     public void onBindViewHolder(HutVisitHolder holder, int position) {
-        Log.i("POSITION", huts.get(position).toString());
         holder.setUpHolder(huts.get(position), position);
     }
 

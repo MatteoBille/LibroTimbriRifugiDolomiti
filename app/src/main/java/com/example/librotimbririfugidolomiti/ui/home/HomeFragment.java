@@ -24,7 +24,7 @@ import com.example.librotimbririfugidolomiti.database.Entity.Persona;
 import com.example.librotimbririfugidolomiti.database.HutsViewModel;
 import com.example.librotimbririfugidolomiti.databinding.FragmentHomeBinding;
 import com.example.librotimbririfugidolomiti.ui.book.BookActivity;
-import com.example.librotimbririfugidolomiti.ui.login.LoginActivity;
+import com.example.librotimbririfugidolomiti.ui.login.SignUpActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void addNewUser() {
-        Intent intent = new Intent(getContext(), LoginActivity.class);
+        Intent intent = new Intent(getContext(), SignUpActivity.class);
         startActivity(intent);
     }
 
