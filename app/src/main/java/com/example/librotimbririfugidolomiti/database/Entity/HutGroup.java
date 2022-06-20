@@ -15,10 +15,10 @@ public class HutGroup {
     @ColumnInfo(name = "GruppoDolomitico")
     private String GruppoDolomitico;
 
-
-    public HutGroup(){
+    public HutGroup() {
 
     }
+
     public HutGroup(Integer hutNumber, String gruppoDolomitico) {
         this.hutNumber = hutNumber;
         GruppoDolomitico = gruppoDolomitico;

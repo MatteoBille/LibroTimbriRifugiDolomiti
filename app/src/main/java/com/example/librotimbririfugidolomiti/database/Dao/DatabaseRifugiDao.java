@@ -17,12 +17,6 @@ public interface DatabaseRifugiDao {
     @Query("SELECT * FROM Rifugi")
     LiveData<List<Rifugio>> getAllHut();
 
-    @Query("SELECT COUNT(DISTINCT GruppoDolomitico) FROM Rifugi")
-    LiveData<Integer> getNumberOfDolomiticGroups();
-
-    @Query("SELECT DISTINCT GruppoDolomitico FROM Rifugi")
-    LiveData<List<String>> getListOfDolomiticGroups();
-
     @Query("SELECT * FROM Rifugi where CodiceRifugio = :hutId")
     LiveData<Rifugio> getHutById(int hutId);
 

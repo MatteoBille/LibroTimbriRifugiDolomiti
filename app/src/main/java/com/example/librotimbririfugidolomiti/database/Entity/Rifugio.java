@@ -60,7 +60,9 @@ public class Rifugio {
         Longitudine = longitudine;
     }
 
-    public void setGruppoDolomitico(String gruppoDolomitico) { GruppoDolomitico = gruppoDolomitico;}
+    public void setGruppoDolomitico(String gruppoDolomitico) {
+        GruppoDolomitico = gruppoDolomitico;
+    }
 
     public void setNomeImmagine(String nomeImmagine) {
         NomeImmagine = nomeImmagine;

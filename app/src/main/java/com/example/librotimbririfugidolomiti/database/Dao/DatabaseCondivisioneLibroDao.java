@@ -19,7 +19,6 @@ public interface DatabaseCondivisioneLibroDao {
     @Query("SELECT * FROM CondivisioneLibro WHERE CodicePersonaVisualizzante=:codicePersona")
     LiveData<List<CondivisioneLibro>> getObtainedBookAsync(String codicePersona);
 
-
     @Query("SELECT * FROM CondivisioneLibro WHERE CodicePersonaVisualizzante=:codicePersona")
     List<CondivisioneLibro> getObtainedBook(String codicePersona);
 

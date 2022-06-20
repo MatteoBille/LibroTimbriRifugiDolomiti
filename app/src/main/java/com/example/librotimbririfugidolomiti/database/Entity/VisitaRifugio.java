@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Entity(tableName="VisiteRifugi",primaryKeys = {"CodicePersona","CodiceRifugio","DataVisita"})
+@Entity(tableName = "VisiteRifugi", primaryKeys = {"CodicePersona", "CodiceRifugio", "DataVisita"})
 public class VisitaRifugio {
 
     @NonNull

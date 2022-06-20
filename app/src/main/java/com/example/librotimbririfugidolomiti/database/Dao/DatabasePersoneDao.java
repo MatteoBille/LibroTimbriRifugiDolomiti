@@ -22,9 +22,6 @@ public interface DatabasePersoneDao {
     @Query("SELECT * FROM Persone WHERE CodicePersona=:codicePersona")
     Persona getPersonById(String codicePersona);
 
-    @Query("SELECT COUNT(*) FROM Persone WHERE Local=:local")
-    Integer getNumberOfUsers(String local);
-
     @Query("SELECT * FROM Persone WHERE Local=:local")
     LiveData<List<Persona>> getAllPeople(String local);
 

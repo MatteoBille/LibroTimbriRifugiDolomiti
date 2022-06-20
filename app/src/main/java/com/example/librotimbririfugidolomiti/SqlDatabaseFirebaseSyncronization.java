@@ -29,7 +29,6 @@ public class SqlDatabaseFirebaseSyncronization {
 
 
     public void synchronizeCloudDb() {
-        Log.i("SYNC", "SONO IN SINCRONIZZAZIONE");
         List<String> personIDs;
         List<Integer> hutIDs;
         personIDs = sqlDb.getAllLocalPeopleIDs();
